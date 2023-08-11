@@ -1,0 +1,27 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Chapman"
+  given-names: "William E."
+  orcid: "https://orcid.org/0000-0002-0472-7069"
+title: "mjoindices"
+abstract: "A Python Package to for Research Using the Real Time Maden Julian Oscillation Index"
+license: "GPL-2.0"
+doi:  xxxxxxxxxxxxxxx
+repository-code: "https://github.com/willychap/MJOcast"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Chapman"
+    given-names: "William E."
+    orcid: "https://orcid.org/0000-0002-0472-7069"
+  - family-names: "Subramanian"
+    given-names: "Aneesh C."
+    orcid: "https://orcid.org/0000-0001-6588-3762"
+  doi: "10.5334/jors.331"
+  journal: "Journal of Open Research Software"
+  title: "A Python Package to for Research Using the Real Time Maden Julian Oscillation Index in Climate Science and Weather Forecasting"
+  volume: 9
+  issue: 1
+  year: 2022
+  month: 5
