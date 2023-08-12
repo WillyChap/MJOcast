@@ -29,7 +29,7 @@ def flip_lat_if_necessary(data):
         return data
     else:
         # Latitude is oriented from North to South, flip it
-        data_flipped = data.reindex(latitude=lat_values[::-1])
+        data_flipped = data.reindex(lat=lat_values[::-1])
         return data_flipped
 
 def switch_lon_to_0_360(data):
@@ -54,7 +54,8 @@ def switch_lon_to_0_360(data):
             return data
         else:
             # Switch the longitude values to the range 0 to 360 degrees
-            data['lon'] = (lon_var + 360) % 360
+            data.coords['lon'] = (lon_var + 360) % 360
+            data = data.sortby(data.lon)
             return data
     else:
         # If the data is a Dataset, check for 'lon' or 'longitude' coordinate variables
@@ -72,6 +73,7 @@ def switch_lon_to_0_360(data):
             else:
                 # Switch the longitude values to the range 0 to 360 degrees
                 data[lon_var_name] = (lon_var + 360) % 360
+                data = data.sortby(data[lon_var_name])
                 return data
         else:
             # If 'lon' or 'longitude' coordinate variables are not found, raise an error
@@ -271,7 +273,16 @@ def interpolate_obs(OBS_DS, lons_forecast):
     if len(lons_forecast) == 360:
         return OBS_DS
     else:
-        # Interpolate observed data to match forecast longitudes
-        OBS_DS = OBS_DS.interp(lon=np.array(lons_forecast)).fillna(0)
+        for var_name in OBS_DS.coords:
+            if 'lon' in var_name.lower() or 'longitude' in var_name.lower():
+                lon_var_name = var_name
+                break
+                
+        if lon_var_name=='lon':
+            # Interpolate observed data to match forecast longitudes
+            OBS_DS = OBS_DS.interp(lon=np.array(lons_forecast)).fillna(0)
+        if lon_var_name=='longitude':
+            # Interpolate observed data to match forecast longitudes
+            OBS_DS = OBS_DS.interp(longitude=np.array(lons_forecast)).fillna(0)
 
     return OBS_DS

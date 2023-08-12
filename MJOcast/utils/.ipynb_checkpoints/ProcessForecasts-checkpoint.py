@@ -84,13 +84,15 @@ class MJOforecaster:
         if yml_usr_info['use_forecast_climo']:
             print('Using the forecast dependent climatology. Make sure you have generated it using ./Preprocessing_Scripts/*.ipynb.')
             # Load the forecast climatology dataset
-            DS_climo_forecast = xr.open_dataset('./Forecast_Climo/Forecast_Climo.nc')
+            DS_climo_forecast = xr.open_dataset(self.base_dir+'/Forecast_Climo/Forecast_Climo.nc')
             #TODO add an option to generate/use their own forecast climo...
+            DS_climo_forecast = interpolate_obs(DS_climo_forecast, lons_forecast)  # Check to make sure this works....
         else: 
             print('Using the climatology calculated by ERA5. It will be less skillful than a lead time dependent climatology.')
             print('Generate a lead time dependent climatology in ./Preprocessing_Scripts/*.ipynb for better results.')
             # Load the ERA5-based forecast climatology dataset
-            DS_climo_forecast = xr.open_dataset('./Observations/ERA5_climo.nc')
+            obs_fp_Ec = os.path.join(self.base_dir,yml_usr_info['obs_data_loc'] + '/ERA5_climo.nc')
+            DS_climo_forecast = xr.open_dataset(obs_fp_Ec)
             # Interpolate the ERA5-based climatology to match the forecast longitudes
             DS_climo_forecast = interpolate_obs(DS_climo_forecast, lons_forecast)  # Check to make sure this works....
         
@@ -125,20 +127,19 @@ class MJOforecaster:
         # Convert the 'fordoy' numpy array to a DataArray
         fordoy_da = xr.DataArray(fordoy, dims='lead', coords={'lead': range(len(fordoy))})
         # Use .sel() and .drop() with the DataArray fordoy
-        DSclimo_doy = DS_climo_forecast.sel(dayofyear=fordoy_da)
+        DSclimo_doy = DS_climo_forecast.sel(dayofyear=fordoy_da,lead=slice(0,numdays_out-1))
 
         # u850:
-        U850_cesm = DS_CESM_for[u850vSTR].squeeze()
-        U850_cesm_anom = xr.zeros_like(U850_cesm.squeeze())
+        U850_cesm = DS_CESM_for[u850vSTR]
+        U850_cesm_anom = xr.zeros_like(U850_cesm)
         temp_clim_u850 = np.array(DSclimo_doy['ua_850'])
         temp_clim_u850 = np.expand_dims(temp_clim_u850, 0)
         if temp_clim_u850.shape[1] == numdays_out + 1:
             temp_clim_u850 = temp_clim_u850[:, :numdays_out, :]
         U850_cesm_anom[:, :, :] = np.array(U850_cesm) - temp_clim_u850
-
         # u200:
-        U200_cesm = DS_CESM_for[u200vSTR].squeeze()
-        U200_cesm_anom = xr.zeros_like(U200_cesm.squeeze())
+        U200_cesm = DS_CESM_for[u200vSTR]
+        U200_cesm_anom = xr.zeros_like(U200_cesm)
         temp_clim_u200 = np.array(DSclimo_doy['ua_200'])
         temp_clim_u200 = np.expand_dims(temp_clim_u200, 0)
         if temp_clim_u200.shape[1] == numdays_out + 1:
@@ -146,8 +147,8 @@ class MJOforecaster:
         U200_cesm_anom[:, :, :] = np.array(U200_cesm) - temp_clim_u200
 
         # OLR:
-        OLRxr = DS_CESM_for[olrvSTR].squeeze()
-        OLR_cesm_anom = xr.zeros_like(DS_CESM_for[olrvSTR].squeeze())
+        OLRxr = DS_CESM_for[olrvSTR]
+        OLR_cesm_anom = xr.zeros_like(DS_CESM_for[olrvSTR])
         temp_clim_olr = np.array(DSclimo_doy['rlut'])
         temp_clim_olr = np.expand_dims(temp_clim_olr, 0)
         if temp_clim_olr.shape[1] == numdays_out + 1:
@@ -177,8 +178,9 @@ class MJOforecaster:
         u200vSTR = yml_usr_info['forecast_u200_name']
         u850vSTR = yml_usr_info['forecast_u850_name']
         olrvSTR = yml_usr_info['forecast_olr_name']
-
-        ERA5clim = xr.open_dataset('./Observations/ERA5_climo.nc')
+        
+        obs_fp_Ec = os.path.join(self.base_dir,yml_usr_info['obs_data_loc'] + '/ERA5_climo.nc')
+        ERA5clim = xr.open_dataset(obs_fp_Ec)
         U850_clim=ERA5clim['uwnd850'].to_dataset()
         U200_clim=ERA5clim['uwnd200'].to_dataset()
         OLR_clim=ERA5clim['olr'].to_dataset()
@@ -188,28 +190,28 @@ class MJOforecaster:
 
         if fordoy[-1]>fordoy[0]:
             ### OLR ####
-            OLRxr = DS_CESM_for[olrvSTR].squeeze()
-            OLR_cesm_anom = xr.zeros_like(DS_CESM_for[olrvSTR].squeeze())
+            OLRxr = DS_CESM_for[olrvSTR]
+            OLR_cesm_anom = xr.zeros_like(DS_CESM_for[olrvSTR])
             temp_clim_olr = np.expand_dims(np.array(OLR_clim.sel(dayofyear=slice(fordoy[0],fordoy[-1]))['olr']),0)
             OLR_cesm_anom[:,:,:] = np.array(OLRxr)-temp_clim_olr
 
             ### u200 winds ####
-            U200_cesm = DS_CESM_for[u200vSTR].squeeze()
-            U200_cesm_anom = xr.zeros_like(U200_cesm.squeeze())
+            U200_cesm = DS_CESM_for[u200vSTR]
+            U200_cesm_anom = xr.zeros_like(U200_cesm)
             temp_clim_u200 = np.expand_dims(np.array(U200_clim.sel(dayofyear=slice(fordoy[0],fordoy[-1]))['uwnd200']),0)
             U200_cesm_anom[:,:,:] = np.array(U200_cesm)-temp_clim_u200
 
             ### u850 winds ####
-            U850_cesm = DS_CESM_for[u850vSTR].squeeze()
-            U850_cesm_anom = xr.zeros_like(U850_cesm.squeeze())
+            U850_cesm = DS_CESM_for[u850vSTR]
+            U850_cesm_anom = xr.zeros_like(U850_cesm)
             temp_clim_u850 = np.expand_dims(np.array(U850_clim.sel(dayofyear=slice(fordoy[0],fordoy[-1]))['uwnd850']),0)
             U850_cesm_anom[:,:,:] = np.array(U850_cesm)-temp_clim_u850
 
         else:
             print('...we crossed Jan 1...')
             ### OLR ####
-            OLRxr = DS_CESM_for[olrvSTR].squeeze()
-            OLR_cesm_anom = xr.zeros_like(DS_CESM_for[olrvSTR].squeeze())
+            OLRxr = DS_CESM_for[olrvSTR]
+            OLR_cesm_anom = xr.zeros_like(DS_CESM_for[olrvSTR])
             temp_clim_olr = np.concatenate([np.array(OLR_clim.sel(dayofyear=slice(fordoy[0],365))['olr']),np.array(OLR_clim.sel(dayofyear=slice(1,fordoy[-1]+1))['olr'])],axis=0)
             temp_clim_olr = np.expand_dims(temp_clim_olr,0)
             if temp_clim_olr.shape[1]==numdays_out + 1:
@@ -217,18 +219,18 @@ class MJOforecaster:
             OLR_cesm_anom[:,:,:] = np.array(OLRxr)-temp_clim_olr
 
             ### u200 winds ####
-            U200_cesm = DS_CESM_for[u200vSTR].squeeze()
-            U200_cesm_anom = xr.zeros_like(U200_cesm.squeeze())
-            temp_clim_u200 = np.concatenate([np.array(U200_clim.sel(dayofyear=slice(fordoy[0],365))['uwnd200']),np.array(U200_clim.sel(dayofyear=slice(1,fordoy[-1]+1))['uwnd'])],axis=0)
+            U200_cesm = DS_CESM_for[u200vSTR]
+            U200_cesm_anom = xr.zeros_like(U200_cesm)
+            temp_clim_u200 = np.concatenate([np.array(U200_clim.sel(dayofyear=slice(fordoy[0],365))['uwnd200']),np.array(U200_clim.sel(dayofyear=slice(1,fordoy[-1]+1))['uwnd200'])],axis=0)
             temp_clim_u200 = np.expand_dims(temp_clim_u200,0)
             if temp_clim_u200.shape[1]==numdays_out + 1:
                 temp_clim_u200 = temp_clim_u200[:,:numdays_out,:,:]
             U200_cesm_anom[:,:,:] = np.array(U200_cesm)-temp_clim_u200
 
             ### u850 winds ####
-            U850_cesm = DS_CESM_for[u850vSTR].squeeze()
-            U850_cesm_anom = xr.zeros_like(U850_cesm.squeeze())
-            temp_clim_u850 = np.concatenate([np.array(U850_clim.sel(dayofyear=slice(fordoy[0],365))['uwnd850']),np.array(U850_clim.sel(dayofyear=slice(1,fordoy[-1]+1))['uwnd'])],axis=0)
+            U850_cesm = DS_CESM_for[u850vSTR]
+            U850_cesm_anom = xr.zeros_like(U850_cesm)
+            temp_clim_u850 = np.concatenate([np.array(U850_clim.sel(dayofyear=slice(fordoy[0],365))['uwnd850']),np.array(U850_clim.sel(dayofyear=slice(1,fordoy[-1]+1))['uwnd850'])],axis=0)
             temp_clim_u850 = np.expand_dims(temp_clim_u850,0)
             if temp_clim_u850.shape[1]==numdays_out + 1:
                 temp_clim_u850 = temp_clim_u850[:,:numdays_out,:,:]
@@ -273,7 +275,8 @@ class MJOforecaster:
         OLR_cesm_anom_filterd = xr.zeros_like(OLR_cesm_anom)
 
         ##get obs anomaly...
-        Obsanom = xr.open_dataset('./Observations/ERA5_Meridional_Mean_Anomaly.nc')
+        obs_fp_MA = os.path.join(self.base_dir,yml_usr_info['obs_data_loc'] + '/ERA5_Meridional_Mean_Anomaly.nc')
+        Obsanom = xr.open_dataset(obs_fp_MA)
         Obsanom = interpolate_obs(Obsanom, DS_CESM_for['lon'])
         OLR_anom = Obsanom['olr'].to_dataset().rename({'olr':yml_usr_info['forecast_olr_name']})
         U200_anom = Obsanom['uwnd200'].to_dataset().rename({'uwnd200':yml_usr_info['forecast_u200_name']})
@@ -581,6 +584,7 @@ class MJOforecaster:
 
         #loop to make each forecast file:
         for FileCounter, eee in enumerate(range(0, len(DF_Uwind))):
+            
             svname = yml_usr_info['output_files_loc'] + yml_usr_info['output_files_string'] + '_' + DF_Uwind['Init'][eee] + '.nc'
 
             if os.path.exists(svname):
@@ -589,6 +593,7 @@ class MJOforecaster:
                 continue  # Skip to the next iteration if the file exists
 
             #Load check and adjust the forecast file and get key variables
+            print('reading forecasts file:', DF_Uwind['File'][eee])
             Bingo, DS_CESM_for, nensembs, numdays_out = self.check_forecast_files_runtime(DF_Uwind['File'][eee], yml_usr_info)   
 
 
@@ -606,7 +611,6 @@ class MJOforecaster:
 
             print('---- doing anomaly ----')
             try:
-                donunt=1
                 if yml_usr_info['use_forecast_climo']:
                     print('im using the LT dp climo')
                     U850_cesm_anom,U200_cesm_anom,OLR_cesm_anom = self.anomaly_LTD(self.yml_data,DS_CESM_for,DS_climo_forecast,numdays_out)

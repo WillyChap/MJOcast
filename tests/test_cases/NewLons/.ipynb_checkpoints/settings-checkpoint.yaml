@@ -1,0 +1,90 @@
+#==============================
+#config_cam_baseline_example.yaml
+
+#This is the main CAM diagnostics config file
+#for doing comparisons of a CAM run against
+#another CAM run, or a CAM baseline simulation.
+
+#Currently, if one is on NCAR's Casper or
+#Cheyenne machine, then only the diagnostic output
+#paths are needed, at least to perform a quick test
+#run (these are indicated with "MUST EDIT" comments).
+#Running these diagnostics on a different machine,
+#or with a different, non-example simulation, will
+#require additional modifications.
+#
+#Config file Keywords:
+#--------------------
+#This first set of variables specify basic info used by all diagnostic runs:
+
+user: 'wchapman'
+base_dir: ../../../MJOcast/
+
+user_defined_info:
+    
+    # ++++ OBSERVATIONS ++++
+    #standard setting to apply the era obs:
+    #if you are not using ERA5 data, please set up your files as you see the obs file in the ./Observations folder
+    #the variable names and dimension orders must be the same. Place the file in the ./Observations folder
+    use_era5: True
+    
+    #this variable is not used if use_era5 is true
+    usr_named_obs: alternative_name_of_obs.nc
+
+    #Location of observational datasets:
+    #Note: This must be modified if era5 data is not to be used.
+    #isn't specified in the variable defaults file.
+    obs_data_loc: ./Observations/
+    # ---- OBSERVATIONS -----
+    
+    # ++++ Forecasts ++++
+    #Location where forecast files are stored:
+    #NOTE ... forecast files must contain: OLR, U200, U850 variables
+    forecast_data_loc: /glade/scratch/wchapman/MJO_S2S_CESM2/p1/test_cases/
+    #note the forecast files must have the initalization time in the name file path with form: *01apr1999.nc
+    #... no other dates should be present in the file names...
+    #TODO make this more generalizable see the function "conver_dates_to_string()" in the development notebook.
+    #I think you can add a column to the dataframe to handle this... 
+    forecast_data_name_str: SmallLons_*.nc
+    
+    #Name of variables in your forecast files:
+    forecast_olr_name: rlut
+    forecast_u200_name: ua_200
+    forecast_u850_name: ua_850
+    forecast_ensemble_dimension_name: ensemble
+    
+    
+    #Location where diagnostic plots are stored:
+    output_plot_loc: ./
+    
+    #Location where output files are stored: 
+    output_files_loc: ./
+    
+    #How the MJO Forecasts should be named (with the prefix):
+    output_files_string: /MJO_Forecast_Init
+    
+
+    # ---- Forecasts ---- 
+    
+    
+    # ++++ Forecast Climatology ++++
+    #Number of processors on which to run the file.
+    #If this config variable isn't present then
+    #the ADF defaults to one processor.  Also, if
+    #you set it to "*" then it will default
+    #to all of the processors available on a
+    #single node/machine:
+    
+    use_forecast_climo: true
+    #this is always false if "use_forecast_climo=true"
+    use_observed_climo: false
+    
+    regenerate_climo: false
+
+    #single node/machine:
+    use_dask_for_climo: true
+    
+    #single node/machine:
+    regenerate_climo: false
+    # ---- Forecast Climatology ----
+    

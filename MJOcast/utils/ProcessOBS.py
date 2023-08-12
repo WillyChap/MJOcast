@@ -97,21 +97,21 @@ class MJOobsProcessor:
 
         # Load the BOM index data
         print('...attaching the BOM index for verification...')
-        dataNOAA = pd.read_csv(os.path.join(self.base_dir,'./Observations/BOM_INDEX.txt'), delimiter='\s+', header=0)
-        dataNOAA.columns = ["year", "month", "day", "RMM1", "RMM2", "phase", 'amplitude', 'doggy']
+        #dataNOAA = pd.read_csv(os.path.join(self.base_dir,'./Observations/BOM_INDEX.txt'), delimiter='\s+', header=0)
+        #dataNOAA.columns = ["year", "month", "day", "RMM1", "RMM2", "phase", 'amplitude', 'doggy']
 
         # Create new variables for the BOM index in the MJO dataset
-        MJO_fobs['RMM1_obs_BOM'] = copy.deepcopy(MJO_fobs['RMM1_obs'].squeeze())
-        MJO_fobs['RMM2_obs_BOM'] = copy.deepcopy(MJO_fobs['RMM2_obs'].squeeze())
+        #MJO_fobs['RMM1_obs_BOM'] = copy.deepcopy(MJO_fobs['RMM1_obs'].squeeze())
+        #MJO_fobs['RMM2_obs_BOM'] = copy.deepcopy(MJO_fobs['RMM2_obs'].squeeze())
 
         # Loop through the time dimension and assign BOM index values to the MJO dataset
-        for ll in range(len(MJO_fobs['time'])):
-            yrnum = int(MJO_fobs['time.year'][ll])
-            monum = int(MJO_fobs['time.month'][ll])
-            daynum = int(MJO_fobs['time.day'][ll])
-            ind_date = dataNOAA[(dataNOAA['year'] == yrnum) & (dataNOAA['month'] == monum) & (dataNOAA['day'] == daynum)].index[0]
-            MJO_fobs['RMM1_obs_BOM'][ll:ll+1] = np.array(dataNOAA[ind_date:ind_date+1]['RMM1'])
-            MJO_fobs['RMM2_obs_BOM'][ll:ll+1] = np.array(dataNOAA[ind_date:ind_date+1]['RMM2'])
+        #for ll in range(len(MJO_fobs['time'])):
+        #    yrnum = int(MJO_fobs['time.year'][ll])
+        #    monum = int(MJO_fobs['time.month'][ll])
+        #    daynum = int(MJO_fobs['time.day'][ll])
+        #    ind_date = dataNOAA[(dataNOAA['year'] == yrnum) & (dataNOAA['month'] == monum) & (dataNOAA['day'] == daynum)].index[0]
+        #    MJO_fobs['RMM1_obs_BOM'][ll:ll+1] = np.array(dataNOAA[ind_date:ind_date+1]['RMM1'])
+        #    MJO_fobs['RMM2_obs_BOM'][ll:ll+1] = np.array(dataNOAA[ind_date:ind_date+1]['RMM2'])
 
         # Save the MJO dataset to a NetCDF file
         svname = os.path.join(self.base_dir,'./Observations/' + 'MJO_obs.nc')
@@ -139,10 +139,16 @@ class MJOobsProcessor:
         # Get the first and second EOFs for OLR
         eof1_olr = eof_list[0][0, :]
         eof2_olr = eof_list[0][1, :]
-
+        #print('len lons:',len(lons))
+        #print(np.max(np.abs(eof1_olr)),'max abs1!')
+        #print(np.max(np.abs(eof2_olr)),'max abs2!')
         # Find the longitude indices of maximum values for the first and second EOFs
-        maxolr1_loc = int(lons[int(np.where(np.abs(eof1_olr) == np.max(np.abs(eof1_olr)))[0])].values)
-        maxolr2_loc = int(lons[int(np.where(np.abs(eof2_olr) == np.max(np.abs(eof2_olr)))[0])].values)
+        maxolr1_loc = int(np.where(np.abs(eof1_olr.squeeze()) == np.max(np.abs(eof1_olr)))[0])
+        maxolr2_loc = int(np.where(np.abs(eof2_olr.squeeze()) == np.max(np.abs(eof2_olr)))[0])
+        
+        #print(maxolr1_loc,'loc max abs1!')
+        #print(maxolr2_loc,'loc max abs2!')
+        #print(np.abs(eof1_olr.squeeze()),'checkthis')
 
         # Check the orientation of MJO's first two EOFs
         if maxolr1_loc > maxolr2_loc:
@@ -153,16 +159,31 @@ class MJOobsProcessor:
             loc2 = 0
 
         # Determine the scaling factors for the first two EOFs based on their signs
-        if eof1_olr[maxolr1_loc] > 0:
-            scale1 = -1
-        else:
-            scale1 = 1
+        
+        if loc1 ==0:
+            if eof1_olr[maxolr1_loc] > 0:
+                scale1 = -1
+            else:
+                scale1 = 1
 
-        if eof2_olr[maxolr2_loc] > 0:
-            scale2 = 1
-        else:
-            scale2 = -1
+            if eof2_olr[maxolr2_loc] > 0:
+                scale2 = 1
+            else:
+                scale2 = -1
+                
+        elif loc1 ==1:
+            if eof1_olr[maxolr1_loc] > 0:
+                scale1 = 1
+            else:
+                scale1 = -1
 
+            if eof2_olr[maxolr2_loc] > 0:
+                scale2 = -1
+            else:
+                scale2 = 1
+        
+        #print(eof1_olr[maxolr1_loc],'check me out',loc1,scale1)
+        #print(eof2_olr[maxolr2_loc],'check me out',loc2,scale2)
         return loc1, loc2, scale1, scale2
 
 
@@ -363,7 +384,7 @@ class MJOobsProcessor:
         plt.ylim(np.min(varfrac), np.max(varfrac) + 0.01)
 
         # Save the plot as an image
-        plt.savefig('./output_plots/observed_variance_fraction.png') 
+        plt.savefig(self.yml_usr_info['output_plot_loc'] + '/'+'/observed_variance_fraction.png') 
         plt.close()
 
     def plot_eof(self,ax):
@@ -450,7 +471,7 @@ class MJOobsProcessor:
         self.plot_eof(ax)
 
         # Save the plot as an image
-        plt.savefig('./output_plots/observed_eofs.png')
+        plt.savefig(self.yml_usr_info['output_plot_loc'] + '/'+'./observed_eofs.png')
         plt.close()
 
     
