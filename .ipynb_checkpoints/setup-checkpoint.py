@@ -18,9 +18,7 @@ setup(
         'eofs',
         'datetime',
         'scipy',
-        'netCDF4',
-        'coverage',
-        'pytest'
+        'netCDF4'
     ],
     extras_require={
         'full_func': ['jupyter','dask'],

@@ -21,7 +21,9 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi  
       - name: Lint with Ruff  
         run: |  
-          pip install ruff  
+          pip install ruff
+	  pip install coverage
+	  pip install pytest  
           ruff --format=github --target-version=py310 .  
         continue-on-error: true  
       - name: Test with pytest  
