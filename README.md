@@ -1,4 +1,4 @@
 # MJOcast
 MJO Forecasting Repo
 
-![example workflow](https://github.com/github/docs/actions/workflows/pytest.yml/badge.svg)
+![example workflow](https://github.com/WillyChap/MJOcast/actions/workflows/pytest.yml/badge.svg)
