@@ -18,11 +18,13 @@ setup(
         'eofs',
         'datetime',
         'scipy',
-        'netCDF4'
+        'netCDF4',
+        'coverage',
+        'pytest'
     ],
     extras_require={
         'full_func': ['jupyter','dask'],
-        'dev': ['build', 'pytest', 'pytest-pep8','coverage'],
+        'dev': ['build', 'pytest-pep8'],
       },
     package_data={'MJOcast': ['*/*.nc']},
 )
