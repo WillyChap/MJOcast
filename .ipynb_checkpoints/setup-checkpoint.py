@@ -22,7 +22,7 @@ setup(
     ],
     extras_require={
         'full_func': ['jupyter','dask'],
-        'dev': ['build', 'pytest-pep8'],
+        'dev': ['build', 'pytest', 'pytest-pep8', 'tox', 'sphinx', 'm2r2', 'sphinx_rtd_theme', 'twine'],
       },
     package_data={'MJOcast': ['*/*.nc']},
 )
