@@ -10,6 +10,18 @@ import copy
 import re
 from datetime import datetime
 
+def func1(arg1,arg2):
+    """
+    This function takes two arguements setting the first to the second
+    
+    :param arg1:
+    :param arg2:
+    :return:
+    """
+    
+    arg1 = arg2
+
+
 def flip_lat_if_necessary(data):
     """
     Check the orientation of the latitude dimension in an xarray dataset and flip it if necessary.
