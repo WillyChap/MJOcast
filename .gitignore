@@ -1,2 +1,3 @@
 /sphinx/_build
 *.pyc
+.ipynb_checkpoints
