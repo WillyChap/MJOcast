@@ -47,6 +47,9 @@ def make_DF_ense(files):
 
 
 class MJOforecaster:
+    
+    """An example docstring for a class definition."""
+    
     def __init__(self,yaml_file_path,eof_dict,MJO_fobs):
         
         #Global attributes that the functions need! 

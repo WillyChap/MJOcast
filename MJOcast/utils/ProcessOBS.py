@@ -16,6 +16,8 @@ from MJOcast.utils.WHtools import interpolate_obs
 from MJOcast.utils.WHtools import check_or_create_paths
 
 class MJOobsProcessor:
+    """An example docstring for a class definition."""
+    
     def __init__(self,yaml_file_path):
         
         #Global attributes that the functions need! 

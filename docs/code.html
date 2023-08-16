@@ -132,7 +132,132 @@ in the range 0 to 360 degrees.</dd>
 </dl>
 </dd></dl>
 
-<span class="target" id="module-ProcessForecasts"></span><dl class="function">
+<span class="target" id="module-ProcessForecasts"></span><dl class="class">
+<dt id="ProcessForecasts.MJOforecaster">
+<em class="property">class </em><code class="descclassname">ProcessForecasts.</code><code class="descname">MJOforecaster</code><span class="sig-paren">(</span><em>yaml_file_path</em>, <em>eof_dict</em>, <em>MJO_fobs</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.MJOforecaster" title="Permalink to this definition">¶</a></dt>
+<dd><p>An example docstring for a class definition.</p>
+<dl class="method">
+<dt id="ProcessForecasts.MJOforecaster.anomaly_ERA5">
+<code class="descname">anomaly_ERA5</code><span class="sig-paren">(</span><em>yml_data</em>, <em>DS_CESM_for</em>, <em>DS_climo_forecast</em>, <em>numdays_out</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.MJOforecaster.anomaly_ERA5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate anomalies of u850, u200, and OLR from forecast and ERA5 climatology datasets.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>yml_data (dict): A dictionary containing user-defined information.
+DS_CESM_for (xr.Dataset): Forecast dataset (CESM format).
+DS_climo_forecast (xr.Dataset): ERA5 climatology dataset.
+numdays_out (int): Number of forecast days.</dd>
+<dt>Returns:</dt>
+<dd>U850_cesm_anom (xr.DataArray): Anomalies of u850.
+U200_cesm_anom (xr.DataArray): Anomalies of u200.
+OLR_cesm_anom (xr.DataArray): Anomalies of OLR.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessForecasts.MJOforecaster.anomaly_LTD">
+<code class="descname">anomaly_LTD</code><span class="sig-paren">(</span><em>yml_data</em>, <em>DS_CESM_for</em>, <em>DS_climo_forecast</em>, <em>numdays_out</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.MJOforecaster.anomaly_LTD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate anomalies of u850, u200, and OLR from forecast and forecast climatology datasets.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>yml_data (dict): A dictionary containing user-defined information.
+DS_CESM_for (xr.Dataset): Forecast dataset (CESM format).
+DS_climo_forecast (xr.Dataset): Forecast climatology dataset.
+numdays_out (int): Number of forecast days.</dd>
+<dt>Returns:</dt>
+<dd>U850_cesm_anom (xr.DataArray): Anomalies of u850.
+U200_cesm_anom (xr.DataArray): Anomalies of u200.
+OLR_cesm_anom (xr.DataArray): Anomalies of OLR.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessForecasts.MJOforecaster.check_forecast_files_runtime">
+<code class="descname">check_forecast_files_runtime</code><span class="sig-paren">(</span><em>for_file_list</em>, <em>yml_usr_info</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.MJOforecaster.check_forecast_files_runtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the forecast files for required variables and ensemble dimension.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>for_file_list (str): File path of the forecast file to be checked.
+yml_usr_info (dict): Dictionary containing user settings from YAML file.</dd>
+<dt>Returns:</dt>
+<dd>Bingo (bool): True if the required variables are present, False otherwise.
+DS (xarray.Dataset): Updated dataset with added ‘ensemble’ dimension (if required).</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessForecasts.MJOforecaster.create_forecasts">
+<code class="descname">create_forecasts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.MJOforecaster.create_forecasts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to create forecast files for a given range of latitude and settings.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>yml_data (dict): Data dictionary containing forecast information.
+lons_forecasts (list): List of longitudes for the forecast.</dd>
+<dt>Returns:</dt>
+<dd>DS_CESM_for (xr.Dataset): Forecast dataset.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessForecasts.MJOforecaster.filt_ndays">
+<code class="descname">filt_ndays</code><span class="sig-paren">(</span><em>yml_data</em>, <em>DS_CESM_for</em>, <em>U850_cesm_anom</em>, <em>U200_cesm_anom</em>, <em>OLR_cesm_anom</em>, <em>DS_climo_forecast</em>, <em>numdays_out</em>, <em>AvgdayN</em>, <em>nensembs</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.MJOforecaster.filt_ndays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform anomaly filtering for atmospheric variables.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>yml_data (dict): YAML data containing user-defined information.
+DS_CESM_for: Not defined in the code snippet provided.
+U850_cesm_anom (xarray.Dataset): Anomaly dataset for U850 variable.
+U200_cesm_anom (xarray.Dataset): Anomaly dataset for U200 variable.
+OLR_cesm_anom (xarray.Dataset): Anomaly dataset for OLR variable.
+DS_climo_forecast: Not defined in the code snippet provided.
+numdays_out: Not defined in the code snippet provided.
+AvgdayN: The number of days to be averaged for filtering.
+nensembs (int): Number of ensemble members.</dd>
+<dt>Returns:</dt>
+<dd>Updated U850_cesm_anom_filterd, U200_cesm_anom_filterd, OLR_cesm_anom_filterd datasets.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessForecasts.MJOforecaster.get_forecast_LT_climo">
+<code class="descname">get_forecast_LT_climo</code><span class="sig-paren">(</span><em>yml_data</em>, <em>lons_forecast</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.MJOforecaster.get_forecast_LT_climo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the forecast climatology dataset.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>yml_data (dict): A dictionary containing user-defined information.
+lons_forecast (array-like): Array of forecast longitudes.</dd>
+<dt>Returns:</dt>
+<dd>DS_climo_forecast (xr.Dataset): Forecast climatology dataset.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessForecasts.MJOforecaster.project_eofs">
+<code class="descname">project_eofs</code><span class="sig-paren">(</span><em>OLR_cesm_anom_filterd</em>, <em>U850_cesm_anom_filterd</em>, <em>U200_cesm_anom_filterd</em>, <em>numdays_out</em>, <em>nensembs</em>, <em>neofs_save</em>, <em>neof</em>, <em>eof_dict</em>, <em>svname</em>, <em>U200_cesm_anom</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.MJOforecaster.project_eofs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate and save RMM indices and EOFs.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>OLR_cesm_anom_filterd (xarray.Dataset): Anomaly dataset for OLR variable.
+U850_cesm_anom_filterd (xarray.Dataset): Anomaly dataset for U850 variable.
+U200_cesm_anom_filterd (xarray.Dataset): Anomaly dataset for U200 variable.
+numdays_out (int): Number of days to project.
+nensembs (int): Number of ensemble members.
+neofs_save (int): Number of EOFs to save.
+neof (int): Number of EOFs to use for RMM calculation.
+eof_dict (dict): Dictionary containing normalization factors and other parameters.</dd>
+<dt>Returns:</dt>
+<dd>RMM1 (numpy.ndarray): RMM index 1.
+RMM2 (numpy.ndarray): RMM index 2.
+eofs_save (numpy.ndarray): Array of EOFs.
+sv_olr (numpy.ndarray): Scaled and normalized OLR data.
+sv_u200 (numpy.ndarray): Scaled and normalized U200 data.
+sv_u850 (numpy.ndarray): Scaled and normalized U850 data.
+sv_olr_unscaled (numpy.ndarray): Unscaled OLR data.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
 <dt id="ProcessForecasts.make_DF_ense">
 <code class="descclassname">ProcessForecasts.</code><code class="descname">make_DF_ense</code><span class="sig-paren">(</span><em>files</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.make_DF_ense" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a DataFrame with files and their corresponding initialization dates.</p>
@@ -144,7 +269,112 @@ in the range 0 to 360 degrees.</dd>
 </dl>
 </dd></dl>
 
-<span class="target" id="module-ProcessOBS"></span></div>
+<span class="target" id="module-ProcessOBS"></span><dl class="class">
+<dt id="ProcessOBS.MJOobsProcessor">
+<em class="property">class </em><code class="descclassname">ProcessOBS.</code><code class="descname">MJOobsProcessor</code><span class="sig-paren">(</span><em>yaml_file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>An example docstring for a class definition.</p>
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.check_MJO_orientation">
+<code class="descname">check_MJO_orientation</code><span class="sig-paren">(</span><em>eof_list</em>, <em>pcs</em>, <em>lons</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.check_MJO_orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the orientation of MJO’s first two Empirical Orthogonal Functions (EOFs).</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>eof_list (list): List of empirical orthogonal functions (EOFs).
+pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
+lons (array_like): Longitudes.</dd>
+<dt>Returns:</dt>
+<dd>loc1 (int): Index of the first dominant EOF.
+loc2 (int): Index of the second dominant EOF.
+scale1 (int): Scaling factor for the first dominant EOF.
+scale2 (int): Scaling factor for the second dominant EOF.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.get_phase_and_eofs">
+<code class="descname">get_phase_and_eofs</code><span class="sig-paren">(</span><em>eof_list</em>, <em>pcs</em>, <em>lons</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.get_phase_and_eofs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate MJO phase and related EOFs.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>eof_list (list): List of empirical orthogonal functions (EOFs).
+pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
+lons (array_like): Longitudes.</dd>
+<dt>Returns:</dt>
+<dd>tot_dict (dict): Dictionary containing MJO phase, RMM indices, and EOFs.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.make_observed_MJO">
+<code class="descname">make_observed_MJO</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.make_observed_MJO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate observed MJO indices using observational data.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>yml_data (dict): Dictionary containing YAML configuration data.
+lons_forecast (array_like): Longitudes of the forecast data.</dd>
+<dt>Returns:</dt>
+<dd>OBS_DS (xarray.Dataset): Xarray dataset containing the observed data.
+eof_list (list): List of empirical orthogonal functions (EOFs).
+pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
+MJO_fobs (xarray.Dataset): Xarray dataset with observed MJO indices.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.plot_eof">
+<code class="descname">plot_eof</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_eof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Customize the EOF plot axis.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>ax (matplotlib.axes.Axes): The axis of the plot to customize.</dd>
+<dt>Returns:</dt>
+<dd>ax (matplotlib.axes.Axes): The customized axis of the plot.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.plot_obs_eof">
+<code class="descname">plot_obs_eof</code><span class="sig-paren">(</span><em>eof_list</em>, <em>pcs</em>, <em>varfrac</em>, <em>lons</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_obs_eof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the spatial structures of EOF1, EOF2, and EOF3.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>eof_list (list): List of EOF arrays for OLR, U850, and U200.
+pcs (numpy.array): Array containing principal components.
+varfrac (numpy.array): Array containing the variance fraction values for each EOF.
+lons (numpy.array): Array of longitudes.</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.plot_varfrac">
+<code class="descname">plot_varfrac</code><span class="sig-paren">(</span><em>varfrac</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_varfrac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the fraction of the total variance represented by each EOF.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>varfrac (numpy.array): Array containing the variance fraction values for each EOF.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.save_out_obs">
+<code class="descname">save_out_obs</code><span class="sig-paren">(</span><em>tot_dict</em>, <em>u200</em>, <em>u850</em>, <em>olr</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.save_out_obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the observed MJO dataset to a NetCDF file.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>tot_dict (dict): Dictionary containing MJO phase, RMM indices, and EOFs.
+u200 (xarray.DataArray): Xarray DataArray containing normalized u200 data.
+u850 (xarray.DataArray): Xarray DataArray containing normalized u850 data.
+olr (xarray.DataArray): Xarray DataArray containing normalized OLR data.</dd>
+<dt>Returns:</dt>
+<dd>MJO_fobs (xarray.Dataset): Xarray dataset containing the observed MJO data.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 
 
           </div>
