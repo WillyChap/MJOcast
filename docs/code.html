@@ -1,0 +1,202 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Code Documentation &#8212; MJOcast 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="summary" href="summary.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-WHtools">
+<span id="code-documentation"></span><h1>Code Documentation<a class="headerlink" href="#module-WHtools" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="WHtools.check_forecast_files">
+<code class="descclassname">WHtools.</code><code class="descname">check_forecast_files</code><span class="sig-paren">(</span><em>for_file_list</em>, <em>yml_usr_info</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.check_forecast_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the forecast files for required variables and ensemble dimension.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>for_file_list (str): File path of the forecast file to be checked.
+yml_usr_info (dict): Dictionary containing user settings from YAML file.</dd>
+<dt>Returns:</dt>
+<dd>Bingo (bool): True if the required variables are present, False otherwise.
+DS (xarray.Dataset): Updated dataset with added ‘ensemble’ dimension (if required).</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="WHtools.check_lat_lon_coords">
+<code class="descclassname">WHtools.</code><code class="descname">check_lat_lon_coords</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.check_lat_lon_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if either “latitude/longitude” or “lat/lon” are in the coordinates of the xarray dataset.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>data (xr.Dataset): Input xarray dataset.</dd>
+<dt>Returns:</dt>
+<dd>has_lat_lon_coords (bool): True if either “latitude/longitude” or “lat/lon” are in the coordinates, False otherwise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="WHtools.check_or_create_paths">
+<code class="descclassname">WHtools.</code><code class="descname">check_or_create_paths</code><span class="sig-paren">(</span><em>yml_data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.check_or_create_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the paths and files required for the forecast data.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>yml_data (dict): Dictionary containing information from the YAML file.</dd>
+<dt>Returns:</dt>
+<dd>DS (xarray.Dataset): Xarray dataset of the forecast data.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="WHtools.flip_lat_if_necessary">
+<code class="descclassname">WHtools.</code><code class="descname">flip_lat_if_necessary</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.flip_lat_if_necessary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the orientation of the latitude dimension in an xarray dataset and flip it if necessary.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>data (xr.Dataset): Input xarray dataset.</dd>
+<dt>Returns:</dt>
+<dd>data_flipped (xr.Dataset): Flipped xarray dataset, if necessary.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="WHtools.func1">
+<code class="descclassname">WHtools.</code><code class="descname">func1</code><span class="sig-paren">(</span><em>arg1</em>, <em>arg2</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.func1" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes two arguements setting the first to the second</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>arg1</strong> – </li>
+<li><strong>arg2</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="WHtools.interpolate_obs">
+<code class="descclassname">WHtools.</code><code class="descname">interpolate_obs</code><span class="sig-paren">(</span><em>OBS_DS</em>, <em>lons_forecast</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.interpolate_obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate observed data to match forecast longitudes.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>OBS_DS (xarray.Dataset): Xarray dataset containing the observed data.
+lons_forecast (array_like): Longitudes of the forecast data.</dd>
+<dt>Returns:</dt>
+<dd>OBS_DS (xarray.Dataset): Interpolated xarray dataset of the observed data.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="WHtools.switch_lon_to_0_360">
+<code class="descclassname">WHtools.</code><code class="descname">switch_lon_to_0_360</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.switch_lon_to_0_360" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the longitude values in the xarray dataset are in the range -180 to 180 degrees,
+and switch them to the range 0 to 360 degrees if needed.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>data (xr.Dataset or xr.DataArray): Input xarray dataset or data array.</dd>
+<dt>Returns:</dt>
+<dd>data_with_lon_0_360 (xr.Dataset or xr.DataArray): Xarray dataset or data array with longitude values
+in the range 0 to 360 degrees.</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-ProcessForecasts"></span><dl class="function">
+<dt id="ProcessForecasts.make_DF_ense">
+<code class="descclassname">ProcessForecasts.</code><code class="descname">make_DF_ense</code><span class="sig-paren">(</span><em>files</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessForecasts.make_DF_ense" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DataFrame with files and their corresponding initialization dates.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>files (list): List of file paths.</dd>
+<dt>Returns:</dt>
+<dd>DF (pd.DataFrame): DataFrame containing files and their initialization dates.</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-ProcessOBS"></span></div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="summary.html" title="previous chapter">summary</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/code.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Will Chapman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/code.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
