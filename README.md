@@ -33,12 +33,12 @@ implementation of the package is based. It is likely that some of these publicat
 
 Contributors
 ------------
-Thanks for the contributions from the community!
 
+We welcome any and all contributions to the communitty, please submit a github issue for increased functionalities! 
 
 Requirements
 ------------
-MJOcast is written for Python 3 (version >= 3.7) and depends on the packages NumPy, Pandas, SciPy, and Matplotlib. It runs on Linux
+MJOcast is written for Python 3 (version >= 3.7) and depends on the packages xarray, eofs, NumPy, Pandas, SciPy, and Matplotlib (see setup and installation instructions). It runs on Linux
 and Windows. Other operating systems have not been tested. 
 
 There are optional requirements, which can be installed along with MJOcast (see below)
