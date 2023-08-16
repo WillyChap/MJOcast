@@ -22,9 +22,7 @@ For a comprehensive grasp of the scientific principles and methodologies underpi
 
 Citation
 --------
-If you use MJOcast in published research, please cite the corresponding paper: Hoffmann, C.G., Kiladis, G.N., Gehne, M. and von Savigny, C., 2021.
-A Python Package to Calculate the OLR-Based Index of the Madden- Julian-Oscillation (OMI) in Climate Science and Weather Forecasting. 
-Journal of Open Research Software, 9(1), p.9. DOI: http://doi.org/10.5334/jors.331
+If you use MJOcast in published research, please cite the corresponding paper: BLAH BLAH BLAH BLAH BLAH DOI: BLAH
 
 Please check our [list of further scientific publications](https://willychap.github.io/MJOcast/references.html), on which the
 implementation of the package is based. It is likely that some of these publications should also be cited.
