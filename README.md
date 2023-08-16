@@ -12,13 +12,13 @@ https://www.youtube.com/watch?v=mV44dBi9qcQ
 Overview
 --------
 
-mjoindices is a Python package relevant for atmospheric scientists. It provides functionality to compute an 
-index of the Madden-Julian-Oscillation (MJO), particularly the OLR-based MJO index (OMI).
+Introducing MJOcast: Elevating Atmospheric Scientists in Subseasonal to Seasonal (S2S) Forecasting!
 
-Whereas the package name has been chosen to indicate that further MJO indices should be included in the future, the 
-implementation is currently limited to the OMI algorithm.
+MJOcast is a Python package meticulously designed to cater to atmospheric scientists deeply engaged in Subseasonal to Seasonal (S2S) forecasting research. It equips you with advanced tools for seamlessly computing the pivotal Madden-Julian Oscillation (MJO) index. Specifically, MJOcast specializes in the esteemed Wheeler and Hendon Real-Time Multivariate MJO Index (RMM). Additionally, it facilitates the generation of compiled netcdf variables and enables precise forecasts of the MJO, accompanied by essential skill metrics.
 
-A scientific description of the package is found in [Chapman et al. (2023)](https://doi.org/10.5334/jors.331).
+While the name MJOcast suggests a future expansion to encompass more MJO indices, our inaugural release centers on the prominent RMM algorithm. We encourage you to explore the broader landscape of MJO toolboxes, such as the notable MJOindices toolbox. While not tailored for forecasting, this alternative toolbox offers an array of other MJO index metrics.
+
+For a comprehensive grasp of the scientific principles and methodologies underpinning MJOcast, we invite you to delve into the in-depth exposition presented in Chapman et al. (2023). This seminal work establishes the bedrock for the concepts and capabilities that MJOcast brings to your research toolkit.
 
 Citation
 --------
