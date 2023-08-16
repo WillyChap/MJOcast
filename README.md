@@ -14,7 +14,11 @@ Overview
 
 Introducing MJOcast: For Atmospheric Scientists on MJO Subseasonal to Seasonal (S2S) Forecasting!
 
-MJOcast is a Python package meticulously designed to cater to atmospheric scientists engaged in Subseasonal to Seasonal (S2S) forecasting research. It equips you with  tools for seamlessly computing the Madden-Julian Oscillation (MJO) index. Specifically, MJOcast specializes in the esteemed Wheeler and Hendon Real-Time Multivariate MJO Index (RMM). Additionally, it facilitates the generation of compiled netcdf variables and enables precise forecasts of the MJO, accompanied by essential skill metrics.
+MJOcast is a Python package meticulously designed to cater to atmospheric scientists engaged in Subseasonal to Seasonal (S2S) forecasting research.
+
+It equips you with  tools for seamlessly computing the Madden-Julian Oscillation (MJO) index. Specifically, MJOcast specializes in the esteemed Wheeler and Hendon Real-Time Multivariate MJO Index (RMM). Additionally, it facilitates the generation of compiled netcdf variables and enables precise forecasts of the MJO, accompanied by essential skill metrics. Particularly, there are a number of pain points involved in taking forecasted hindcast ensembles and producing the MJO indices. This package just needs to be pointed at your model runs (with the correct model variables present) and it will generate the ensemble of forecasts. Please see the examples below to prep your data. A large effort were made to accept multiple common file formats from the major modeling centers.
+
+Currently, we are leveraging the state-of-the-art ERA5 (cite) reanaylsis product to produce the observations and to do the 120-day filtering of the forecast product. Each forecasted field is also packaged with the forecast observations for immediate skill validation. In hindcast mode, this package is capable of handling forecasts that were produced with initializations anywhere from 1951 to 2023. 
 
 While the name MJOcast suggests a future expansion to encompass more MJO indices, our inaugural release centers on the prominent RMM algorithm. We encourage you to explore the broader landscape of MJO toolboxes, such as the notable MJOindices toolbox. While not tailored for forecasting, this alternative toolbox offers an array of other MJO index metrics.
 
