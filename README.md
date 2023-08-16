@@ -14,7 +14,7 @@ Overview
 
 Introducing MJOcast: For Atmospheric Scientists on MJO Subseasonal to Seasonal (S2S) Forecasting!
 
-MJOcast is a Python package meticulously designed to cater to atmospheric scientists deeply engaged in Subseasonal to Seasonal (S2S) forecasting research. It equips you with  tools for seamlessly computing the Madden-Julian Oscillation (MJO) index. Specifically, MJOcast specializes in the esteemed Wheeler and Hendon Real-Time Multivariate MJO Index (RMM). Additionally, it facilitates the generation of compiled netcdf variables and enables precise forecasts of the MJO, accompanied by essential skill metrics.
+MJOcast is a Python package meticulously designed to cater to atmospheric scientists engaged in Subseasonal to Seasonal (S2S) forecasting research. It equips you with  tools for seamlessly computing the Madden-Julian Oscillation (MJO) index. Specifically, MJOcast specializes in the esteemed Wheeler and Hendon Real-Time Multivariate MJO Index (RMM). Additionally, it facilitates the generation of compiled netcdf variables and enables precise forecasts of the MJO, accompanied by essential skill metrics.
 
 While the name MJOcast suggests a future expansion to encompass more MJO indices, our inaugural release centers on the prominent RMM algorithm. We encourage you to explore the broader landscape of MJO toolboxes, such as the notable MJOindices toolbox. While not tailored for forecasting, this alternative toolbox offers an array of other MJO index metrics.
 
