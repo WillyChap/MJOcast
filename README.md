@@ -8,6 +8,10 @@ MJO Forecasting Repo
 
 https://www.youtube.com/watch?v=mV44dBi9qcQ
 
+Documentation
+-----------------
+The documentation is found on [GitHub Pages](https://willychap.github.io/MJOcast/) and also in the docs
+folder of the [source](https://github.com/willychap/MJOcast/docs/).
 
 Overview
 --------
@@ -102,10 +106,6 @@ After you have installed MJOcast, you can download an
 
 Both files are also available as Jupyter notebook files.
 
-Documentation
------------------
-The documentation is found on [GitHub Pages](https://willychap.github.io/MJOcast/) and also in the docs
-folder of the [source](https://github.com/willychap/MJOcast/docs/).
 
 Automated testing
 -----------------
