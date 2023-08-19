@@ -1,7 +1,7 @@
 # MJOcast
 MJO Forecasting Repo
 
-![example workflow](https://github.com/WillyChap/MJOcast/actions/workflows/pytest.yml/badge.svg)
+![example workflow](https://github.com/WillyChap/MJOcast/actions/workflows/pytest_obs.yml/badge.svg)
 
 
 ## set up the docs script like so: 
