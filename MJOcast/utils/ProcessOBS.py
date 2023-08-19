@@ -18,7 +18,7 @@ from MJOcast.utils.WHtools import check_or_create_paths
 class MJOobsProcessor:
     """An example docstring for a class definition."""
     
-    def __init__(self,yaml_file_path):
+    def __init__(self,yaml_file_path,scaling_dict=None):
         
         #Global attributes that the functions need! 
         
@@ -31,6 +31,7 @@ class MJOobsProcessor:
         DSforexample = check_or_create_paths(yml_data)
         self.forecast_lons = DSforexample['lon']
         self.base_dir = yml_data['base_dir']
+        self.scaling_dict = scaling_dict
         pass
     
     
@@ -120,7 +121,7 @@ class MJOobsProcessor:
         MJO_fobs.to_netcdf(svname)
 
         return MJO_fobs
-
+    
 
     def check_MJO_orientation(self,eof_list, pcs, lons):
         """
@@ -137,56 +138,67 @@ class MJOobsProcessor:
             scale1 (int): Scaling factor for the first dominant EOF.
             scale2 (int): Scaling factor for the second dominant EOF.
         """
+        if self.scaling_dict is not None:
+            self.pass_eof_scaling_factors(scaling_dictionary=self.scaling_dict)
+            loc1 = self.loc1
+            loc2 = self.loc2 
+            scale1 = self.scale1
+            scale2 = self.scale2 
+            return loc1, loc2, scale1, scale2
+        else:    
 
-        # Get the first and second EOFs for OLR
-        eof1_olr = eof_list[0][0, :]
-        eof2_olr = eof_list[0][1, :]
-        #print('len lons:',len(lons))
-        #print(np.max(np.abs(eof1_olr)),'max abs1!')
-        #print(np.max(np.abs(eof2_olr)),'max abs2!')
-        # Find the longitude indices of maximum values for the first and second EOFs
-        maxolr1_loc = int(np.where(np.abs(eof1_olr.squeeze()) == np.max(np.abs(eof1_olr)))[0])
-        maxolr2_loc = int(np.where(np.abs(eof2_olr.squeeze()) == np.max(np.abs(eof2_olr)))[0])
-        
-        #print(maxolr1_loc,'loc max abs1!')
-        #print(maxolr2_loc,'loc max abs2!')
-        #print(np.abs(eof1_olr.squeeze()),'checkthis')
+            # Get the first and second EOFs for OLR
+            eof1_olr = eof_list[0][0, :]
+            eof2_olr = eof_list[0][1, :]
+            #print('len lons:',len(lons))
+            #print(np.max(np.abs(eof1_olr)),'max abs1!')
+            #print(np.max(np.abs(eof2_olr)),'max abs2!')
+            # Find the longitude indices of maximum values for the first and second EOFs
+            maxolr1_loc = int(np.where(np.abs(eof1_olr.squeeze()) == np.max(np.abs(eof1_olr)))[0])
+            maxolr2_loc = int(np.where(np.abs(eof2_olr.squeeze()) == np.max(np.abs(eof2_olr)))[0])
 
-        # Check the orientation of MJO's first two EOFs
-        if maxolr1_loc > maxolr2_loc:
-            loc1 = 0
-            loc2 = 1
-        else:
-            loc1 = 1
-            loc2 = 0
+            #print(maxolr1_loc,'loc max abs1!')
+            #print(maxolr2_loc,'loc max abs2!')
+            #print(np.abs(eof1_olr.squeeze()),'checkthis')
 
-        # Determine the scaling factors for the first two EOFs based on their signs
-        
-        if loc1 ==0:
-            if eof1_olr[maxolr1_loc] > 0:
-                scale1 = -1
+            # Check the orientation of MJO's first two EOFs
+            if maxolr1_loc > maxolr2_loc:
+                loc1 = 0
+                loc2 = 1
             else:
-                scale1 = 1
+                loc1 = 1
+                loc2 = 0
 
-            if eof2_olr[maxolr2_loc] > 0:
-                scale2 = 1
-            else:
-                scale2 = -1
-                
-        elif loc1 ==1:
-            if eof1_olr[maxolr1_loc] > 0:
-                scale1 = 1
-            else:
-                scale1 = -1
+            # Determine the scaling factors for the first two EOFs based on their signs
 
-            if eof2_olr[maxolr2_loc] > 0:
-                scale2 = -1
-            else:
-                scale2 = 1
-        
-        #print(eof1_olr[maxolr1_loc],'check me out',loc1,scale1)
-        #print(eof2_olr[maxolr2_loc],'check me out',loc2,scale2)
-        return loc1, loc2, scale1, scale2
+            if loc1 ==0:
+                if eof1_olr[maxolr1_loc] > 0:
+                    scale1 = -1
+                else:
+                    scale1 = 1
+
+                if eof2_olr[maxolr2_loc] > 0:
+                    scale2 = 1
+                else:
+                    scale2 = -1
+
+            elif loc1 ==1:
+                if eof1_olr[maxolr1_loc] > 0:
+                    scale1 = 1
+                else:
+                    scale1 = -1
+
+                if eof2_olr[maxolr2_loc] > 0:
+                    scale2 = -1
+                else:
+                    scale2 = 1
+
+
+            self.loc1 = loc1
+            self.loc2 = loc2 
+            self.scale1 = scale1
+            self.scale2 = scale2 
+            return loc1, loc2, scale1, scale2
 
 
     def get_phase_and_eofs(self, eof_list, pcs, lons):
@@ -278,6 +290,7 @@ class MJOobsProcessor:
             pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
             MJO_fobs (xarray.Dataset): Xarray dataset with observed MJO indices.
         """
+        
 
         # Extract user-defined info from YAML data
         yml_usr_info = self.yml_data['user_defined_info']
@@ -475,7 +488,71 @@ class MJOobsProcessor:
         # Save the plot as an image
         plt.savefig(self.yml_usr_info['output_plot_loc'] + '/'+'./observed_eofs.png')
         plt.close()
-
-    
-
         
+        
+    def check_obs_eofs(self):
+        """
+        Checks the correlation between observed dataset EOF values and ERA5 EOF values for specific modes.
+
+        This function opens an observed dataset file, interpolates the data, and calculates the correlation coefficients
+        between specific EOF modes of the observed dataset and corresponding ERA5 EOF values. It compares the calculated
+        correlations to a predefined threshold and raises an assertion error if any correlation is below the threshold.
+
+        Returns:
+            bool: True if all correlations are above the threshold, indicating a high correlation between observed and ERA5 EOF values.
+        """
+        fp = self.base_dir + '../../tests/test_cases/eofs_MJO.nc'
+        check_corr_ds = xr.open_dataset(fp)
+        check_corr_ds = interpolate_obs(check_corr_ds, self.forecast_lons)
+        corr_dict = {}
+
+        check_modes = ['eof1_olr', 'eof2_olr', 'eof1_u200', 'eof2_u200', 'eof1_u850', 'eof2_u850']
+
+        for cm in check_modes:
+            corrnum = np.corrcoef(check_corr_ds[cm].values, self.MJO_fobs[cm])[0, 1]
+            corr_dict[cm] = corrnum
+
+        print('the correlation of the observed dataset EOF values and the ERA5 EOF values is:')
+        print(corr_dict)
+
+        for cm in check_modes:
+            assert corr_dict[cm] > 0.7, (
+            "One of your modes is not correlated highly (<0.7) with the ERA5 observations,\n"
+            "consider providing your own scaling factors (ProObs.MJOobsProcessor(yaml_file_path, scaling_dict=scaling_dict)\n"
+            "see Wheeler and Hendon 2004 to make sure they are right)\n"
+            "If you did pass a scaling dictionary... it is likely not correct"
+            )
+            
+        self.passes_obs_correlation_test = True
+
+        return self.passes_obs_correlation_test
+    
+    def pass_eof_scaling_factors(self, scaling_dictionary=None):
+        """
+        Sets the scaling factors for MJO observation EOF modes based on a user-defined dictionary.
+
+        This function allows users to provide a dictionary containing scaling factors for EOF modes.
+        If no scaling dictionary is provided, default scaling factors are set and determined for the observations.
+
+        Args:
+            scaling_dict (dict, optional): A dictionary containing scaling factors for EOF modes.
+                The dictionary should include 'loc1', 'loc2', 'scale1', and 'scale2' keys, representing
+                the location of the EOF (0/1) and scaling factors (1 or -1) for the EOF modes 
+                1 & 2 in the WH RMM calculation.
+
+        Raises:
+            KeyError: If the provided scaling_dict is missing any of the required keys.
+        """
+        if self.scaling_dict is None:
+            self.loc1 = 0
+            self.loc2 = 1
+            self.scale1 = 1
+            self.scale2 = 1
+        else:
+            try:
+                self.loc1 = scaling_dictionary['loc1']
+                self.loc2 = scaling_dictionary['loc2']
+                self.scale1 = scaling_dictionary['scale1']
+                self.scale2 = scaling_dictionary['scale2']
+            except KeyError:
+                print("The scaling dictionary must contain 'loc1', 'loc2', 'scale1', and 'scale2' keys.")

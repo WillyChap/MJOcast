@@ -132,7 +132,7 @@ def check_or_create_paths(yml_data):
         assert os.path.exists(check_forecast_data), print(f"The path '{check_forecast_data}' exists.")
 
         # Get a list of forecast files using a specified filename pattern
-        for_fil_list = sorted(glob.glob(yml_usr_info['forecast_data_loc'] + yml_usr_info['forecast_data_name_str']))
+        for_fil_list = sorted(glob.glob(yml_usr_info['forecast_data_loc'] + '/'+ yml_usr_info['forecast_data_name_str']))
         file_count = len(for_fil_list)
         print(f"Number of forecast files to process: {file_count}")
 
@@ -140,7 +140,7 @@ def check_or_create_paths(yml_data):
             # Check if there are any forecast files to process
             assert file_count > 0
         except: 
-            raise FileNotFoundError(f"Files '{yml_usr_info['forecast_data_name_str']}' do not exist.")
+            raise FileNotFoundError(f"Files '{yml_usr_info['forecast_data_loc'] + '/'+ yml_usr_info['forecast_data_name_str']}' do not exist.")
         # Check the first forecast file and get the xarray dataset
         Bingo, DS = check_forecast_files(for_fil_list[0], yml_usr_info)
 
@@ -151,7 +151,7 @@ def check_or_create_paths(yml_data):
 
     except AssertionError as e:
         # If the path doesn't exist, raise a custom error message
-        raise FileNotFoundError(f"The path '{check_forecast_data}' does not exist.")
+        raise FileNotFoundError(f"The path '{yml_usr_info['forecast_data_loc'] + yml_usr_info['forecast_data_name_str']}' does not exist.")
 
     return DS
 
