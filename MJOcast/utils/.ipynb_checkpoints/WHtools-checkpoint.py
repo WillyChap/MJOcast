@@ -151,7 +151,7 @@ def check_or_create_paths(yml_data):
 
     except AssertionError as e:
         # If the path doesn't exist, raise a custom error message
-        raise FileNotFoundError(f"The path '{yml_usr_info['forecast_data_loc'] + yml_usr_info['forecast_data_name_str']}' does not exist.")
+        raise FileNotFoundError(f"The path '{yml_usr_info['forecast_data_loc'] + '/' +yml_usr_info['forecast_data_name_str']}' does not exist.")
 
     return DS
 

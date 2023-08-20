@@ -562,6 +562,7 @@ class MJOforecaster:
 
         Returns:
             DS_CESM_for (xr.Dataset): Forecast dataset.
+            
         """
         # Settings
         latwant = [16, -16]  # Latitudinal range
@@ -574,9 +575,9 @@ class MJOforecaster:
         datadir_Uwind = yml_usr_info['forecast_data_loc']
 
         # Get filenames in a dataframe
-        FN_Uwind = sorted(glob.glob(yml_usr_info['forecast_data_loc'] + yml_usr_info['forecast_data_name_str']))
+        FN_Uwind = sorted(glob.glob(yml_usr_info['forecast_data_loc'] + '/'+ yml_usr_info['forecast_data_name_str']))
         if len(FN_Uwind) == 0:
-            raise FileNotFoundError(f"Files '{yml_usr_info['forecast_data_name_str']}' do not exist... "
+            raise FileNotFoundError(f"Files '{yml_usr_info['forecast_data_loc'] + '/'+ yml_usr_info['forecast_data_name_str']}' do not exist... "
                                     f"check your datestring of the filenames.")
 
         #get the driver dataframe
@@ -619,7 +620,6 @@ class MJOforecaster:
                     U850_cesm_anom,U200_cesm_anom,OLR_cesm_anom = self.anomaly_LTD(self.yml_data,DS_CESM_for,DS_climo_forecast,numdays_out)
                 else: 
                     U850_cesm_anom,U200_cesm_anom,OLR_cesm_anom = self.anomaly_ERA5(self.yml_data,DS_CESM_for,DS_climo_forecast,numdays_out)
-                #function to run the anomaly... get_forecast_anom(yml_data,DS_CESM_for,DS_climo_forecast)
             except:
                 raise RuntimeError("error happened while computing forecast runtime anomaly.. check the get_forecast_anom() function")
             print('---- done computing the anomaly----')

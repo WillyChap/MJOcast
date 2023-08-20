@@ -117,7 +117,7 @@ class MJOobsProcessor:
         #    MJO_fobs['RMM2_obs_BOM'][ll:ll+1] = np.array(dataNOAA[ind_date:ind_date+1]['RMM2'])
 
         # Save the MJO dataset to a NetCDF file
-        svname = os.path.join(self.base_dir,'./Observations/' + 'MJO_obs.nc')
+        svname = os.path.join(self.base_dir,self.yml_usr_info['obs_data_loc'] + 'MJO_obs_created.nc')
         MJO_fobs.to_netcdf(svname)
 
         return MJO_fobs

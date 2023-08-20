@@ -58,10 +58,10 @@ user_defined_info:
     output_plot_loc: ./MJOcast/output_plots/
     
     #Location where output files are stored: 
-    output_files_loc: ./.
+    output_files_loc: ././tests/
     
     #How the MJO Forecasts should be named:
-    output_files_string: /MJO_Forecast_Init
+    output_files_string: /MJO_Forecast_Init_Case1
     
 
     # ---- Forecasts ---- 
