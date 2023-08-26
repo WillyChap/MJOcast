@@ -1,0 +1,11 @@
+
+
+
+## run this: 
+
+
+rm -r ./.ipynb_checkpoints/
+
+make clean
+
+make html
