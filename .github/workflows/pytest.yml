@@ -1,5 +1,5 @@
 name: Pytest Workflow
-
+run-name: ${{ github.actor }} 🚀 is testing the wallet
 on: [push]
 
 jobs:
