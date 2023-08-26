@@ -1,5 +1,5 @@
 name: Pytest Workflow Obs
-
+run-name: ${{ github.actor }} 🚀 is testing the obs_processor
 on: [push]
 
 jobs:
