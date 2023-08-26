@@ -1,25 +1,26 @@
-import yaml
-import os
-import glob
-import xarray as xr
-import numpy as np
-import eofs.standard as Eof_st
-from eofs.multivariate.standard import MultivariateEof
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import pandas as pd
-import copy
-import re
-from datetime import datetime
-import os
-import sys
+# Import required libraries
+import yaml  # For working with YAML configuration files
+import os  # For operating system functionalities
+import glob  # For file path pattern matching
+import xarray as xr  # For working with labeled multi-dimensional arrays
+import numpy as np  # For numerical operations
+import eofs.standard as Eof_st  # For Empirical Orthogonal Function analysis
+from eofs.multivariate.standard import MultivariateEof  # For multivariate EOF analysis
+import matplotlib.pyplot as plt  # For creating plots
+import matplotlib as mpl  # Matplotlib configuration and settings
+import pandas as pd  # For working with data in tabular form
+import copy  # For creating deep copies of objects
+import re  # For regular expressions
+from datetime import datetime  # For working with date and time
+import sys  # For interacting with the Python interpreter
 from MJOcast.utils.WHtools import (
-    interpolate_obs,
-    check_or_create_paths,
-    convert_dates_to_string,
-    check_lat_lon_coords,
-    flip_lat_if_necessary,
-    switch_lon_to_0_360
+    interpolate_obs,  # Custom utility functions for data manipulation
+    check_or_create_paths,  # Custom utility functions for file and directory management
+    convert_dates_to_string,  # Custom utility functions for date conversion
+    check_lat_lon_coords,  # Custom utility functions for coordinate validation
+    flip_lat_if_necessary,  # Custom utility functions for coordinate adjustment
+    switch_lon_to_0_360,  # Custom utility functions for coordinate adjustment
+    plot_phase_space  # Custom utility function for plotting MJO phase space
 )
 
 def make_DF_ense(files):
@@ -47,12 +48,35 @@ def make_DF_ense(files):
 
 
 class MJOforecaster:
+    """
+    A class for forecasting the Madden-Julian Oscillation (MJO) using given parameters.
+
+    This class provides methods for forecasting the MJO based on user-defined configurations.
     
-    """An example docstring for a class definition."""
-    
+    Parameters:
+        yaml_file_path (str): The path to the YAML configuration file.
+        eof_dict (dict): A dictionary containing Empirical Orthogonal Function (EOF) configurations.
+        MJO_fobs (xarray.Dataset): Observed MJO data as an xarray Dataset.
+
+    Attributes:
+        yml_data (dict): Parsed data from the YAML configuration file.
+        yml_usr_info (dict): User-defined information from the YAML configuration.
+        forecast_lons (list): List of longitudes used for forecasting.
+        base_dir (str): The base directory specified in the YAML configuration.
+        eof_dict (dict): Dictionary containing EOF configurations.
+        MJO_fobs (xarray.Dataset): Observed MJO data.
+        made_forecast_file (bool): Indicates if a forecast file has been created.
+    """
     def __init__(self,yaml_file_path,eof_dict,MJO_fobs):
         
-        #Global attributes that the functions need! 
+        """
+        Initialize the MJOforecaster instance with provided configurations.
+        
+        Parameters:
+            yaml_file_path (str): The path to the YAML configuration file.
+            eof_dict (dict): A dictionary containing Empirical Orthogonal Function (EOF) configurations.
+            MJO_fobs (xarray.Dataset): Observed MJO data as an xarray Dataset.
+        """
         
         with open(yaml_file_path, 'r') as file:
             yml_data = yaml.safe_load(file)
@@ -65,6 +89,9 @@ class MJOforecaster:
         self.base_dir = yml_data['base_dir']
         self.eof_dict = eof_dict
         self.MJO_fobs = MJO_fobs
+        
+        
+        self.made_forecast_file = False
         pass
     
     
@@ -288,21 +315,21 @@ class MJOforecaster:
         for enen in range(nensembs):
             ### OLR anomaly filtering:
             tmpREolr=OLR_anom.sel(time=slice(first_date_120,first_date))
-            tmpREolr=tmpREolr.drop('dayofyear')
+            tmpREolr=tmpREolr.drop_vars('dayofyear')
             fused_RE_for_OLR = xr.concat([tmpREolr,OLR_cesm_anom.sel(ensemble=enen).to_dataset()],dim='time')
             fused_RE_for_OLR_rolled = fused_RE_for_OLR.rolling(time=120, center=False,min_periods=1).mean().sel(time=slice(OLR_cesm_anom.time.values[0],OLR_cesm_anom.time.values[-1]))
             OLR_cesm_anom_filterd[enen,:,:]=OLR_cesm_anom.sel(ensemble=enen).values - fused_RE_for_OLR_rolled[olrv].values
 
             ### U200 anomaly filtering:
             tmpRE200=U200_anom.sel(time=slice(first_date_120,first_date))
-            tmpRE200=tmpRE200.drop('dayofyear')
+            tmpRE200=tmpRE200.drop_vars('dayofyear')
             fused_RE_for_200 = xr.concat([tmpRE200,U200_cesm_anom.sel(ensemble=enen).to_dataset()],dim='time')
             fused_RE_for_200_rolled = fused_RE_for_200.rolling(time=120, center=False,min_periods=1).mean().sel(time=slice(U200_cesm_anom.time.values[0],U200_cesm_anom.time.values[-1]))
             U200_cesm_anom_filterd[enen,:,:]=U200_cesm_anom.sel(ensemble=enen).values - fused_RE_for_200_rolled[u200v].values
 
             ### U850 anomaly filtering:
             tmpRE850=U850_anom.sel(time=slice(first_date_120,first_date))
-            tmpRE850=tmpRE850.drop('dayofyear')
+            tmpRE850=tmpRE850.drop_vars('dayofyear')
             fused_RE_for_850 = xr.concat([tmpRE850,U850_cesm_anom.sel(ensemble=enen).to_dataset()],dim='time')
             fused_RE_for_850_rolled = fused_RE_for_850.rolling(time=120, center=False,min_periods=1).mean().sel(time=slice(U850_cesm_anom.time.values[0],U850_cesm_anom.time.values[-1]))
             U850_cesm_anom_filterd[enen,:,:]=U850_cesm_anom.sel(ensemble=enen).values - fused_RE_for_850_rolled[u850v].values
@@ -411,6 +438,33 @@ class MJOforecaster:
 
     def save_out_forecast_nc(self,RMM1,RMM2,RMM1_emean,RMM2_emean,RMM1_obs_cera20c,RMM2_obs_cera20c,eofs_save,MJO_fobs,
                              sv_olr,sv_u200,sv_u850,eof_dict,neofs_save,OLR_cesm_anom_filterd_latmean,svname,U200_cesm_anom,U200_cesm_anom_filterd):
+        
+        
+        """
+        Save forecasted MJO data to a netCDF file and set attribute information.
+
+        This function saves forecasted MJO-related data into a netCDF file and assigns attribute
+        information for better metadata representation.
+
+        Parameters:
+            RMM1 (numpy.ndarray): Array containing forecasted RMM1 data.
+            RMM2 (numpy.ndarray): Array containing forecasted RMM2 data.
+            RMM1_emean (numpy.ndarray): Array containing forecasted RMM1 ensemble mean data.
+            RMM2_emean (numpy.ndarray): Array containing forecasted RMM2 ensemble mean data.
+            RMM1_obs_cera20c (numpy.ndarray): Array containing observed RMM1 data (CERA-20C).
+            RMM2_obs_cera20c (numpy.ndarray): Array containing observed RMM2 data (CERA-20C).
+            eofs_save (numpy.ndarray): Array containing saved EOFs data.
+            MJO_fobs (xarray.Dataset): Observed MJO data as an xarray Dataset.
+            sv_olr (numpy.ndarray): Array containing saved normalized OLR data.
+            sv_u200 (numpy.ndarray): Array containing saved normalized u200 data.
+            sv_u850 (numpy.ndarray): Array containing saved normalized u850 data.
+            eof_dict (dict): Dictionary containing EOF configurations.
+            neofs_save (int): Number of EOFs to save.
+            OLR_cesm_anom_filterd_latmean (xarray.DataArray): Filtered and latitude-mean OLR data.
+            svname (str): Name of the netCDF file to save.
+            U200_cesm_anom (numpy.ndarray): Array containing u200 anomalies data (CESM2).
+            U200_cesm_anom_filterd (numpy.ndarray): Array containing filtered u200 anomalies data (CESM2).
+        """
 
         solver=eof_dict['solver']
 
@@ -471,6 +525,7 @@ class MJOforecaster:
         MJO_for.to_netcdf(svname)
         print('saved: ',svname)  
         self.MJO_forecast_DS = MJO_for
+        
 
 
 
@@ -552,17 +607,22 @@ class MJOforecaster:
         return Bingo, DS, ense_length, leaddays
 
 
-    def create_forecasts(self):
+    def create_forecasts(self,num_files=None):
         """
-        Function to create forecast files for a given range of latitude and settings.
+        Create forecast files for a given range of latitude and settings.
+
+        This function generates forecast files based on provided configurations, including latitude range,
+        filtering parameters, and EOF settings. It processes each forecast file and saves the forecasted
+        data into netCDF files. This function also performs data manipulation and filtering operations.
 
         Parameters:
-            yml_data (dict): Data dictionary containing forecast information.
-            lons_forecasts (list): List of longitudes for the forecast.
+            num_files (int, optional): The maximum number of forecast files to process. If None, process all files.
 
         Returns:
-            DS_CESM_for (xr.Dataset): Forecast dataset.
-            
+            DS_CESM_for (xr.Dataset): Forecast dataset containing processed forecasted data.
+            OLR_cesm_anom_filterd (numpy.ndarray): Filtered OLR anomalies.
+            U200_cesm_anom_filterd (numpy.ndarray): Filtered u200 anomalies.
+            U850_cesm_anom_filterd (numpy.ndarray): Filtered u850 anomalies.
         """
         # Settings
         latwant = [16, -16]  # Latitudinal range
@@ -579,6 +639,12 @@ class MJOforecaster:
         if len(FN_Uwind) == 0:
             raise FileNotFoundError(f"Files '{yml_usr_info['forecast_data_loc'] + '/'+ yml_usr_info['forecast_data_name_str']}' do not exist... "
                                     f"check your datestring of the filenames.")
+            
+            
+        if num_files is None: 
+            count_files = 100000000000000
+        else: 
+            count_files = 0
 
         #get the driver dataframe
         DF_Uwind = make_DF_ense(FN_Uwind)
@@ -588,6 +654,10 @@ class MJOforecaster:
 
         #loop to make each forecast file:
         for FileCounter, eee in enumerate(range(0, len(DF_Uwind))):
+            
+            if count_files==num_files:
+                print('done with requested number of files')
+                break
             
             svname = yml_usr_info['output_files_loc'] + yml_usr_info['output_files_string'] + '_' + DF_Uwind['Init'][eee] + '.nc'
 
@@ -657,6 +727,81 @@ class MJOforecaster:
             self.OLR_anom_filtered = OLR_cesm_anom_filterd
             self.U200_anom_filtered = U200_cesm_anom_filterd
             self.U850_anom_filtered = U850_cesm_anom_filterd
-            
+            self.made_forecast_file = True
+            count_files+=1
 
         return DS_CESM_for,OLR_cesm_anom_filterd,U200_cesm_anom_filterd,U850_cesm_anom_filterd
+    
+    
+    
+    def plot_phase_space(self, Num_Ensembles, Lead):
+        """
+        Plot MJO RMM Ensemble phase space with a scatter plot indicating the progression of time.
+        
+        Parameters:
+            date_start (str or pandas.Timestamp): Starting date for the plot.
+            days_forward (int): Number of days to project forward.
+        
+        Raises:
+            RuntimeError: If 'make_observed_MJO' hasn't been executed to create observational MJO data.
+        """
+
+        
+        if not self.made_forecast_file:
+            raise RuntimeError("create_forecasts MJO must have been created by running 'create_forecasts'")
+            
+            
+        date_start = self.DS_for['time'][0]
+        
+        # Create a deep copy of the input date string and convert it to pandas.Timestamp
+        date_start_str = str(date_start.values)[:10]
+        date_start = pd.to_datetime(date_start_str)
+        
+        MJO_fobs = self.MJO_fobs
+        DS_for = self.MJO_forecast_DS
+        
+        DS_for.sel(number=slice(0,Num_Ensembles))
+        
+        # Create a new figure and axis for the plot
+        fig, ax = plt.subplots(figsize=(13, 10))
+        fig.suptitle('MJO RMM phase space, Start Date: ' + date_start_str, fontsize=14)
+        plt.title('')
+        
+        # Increment time by the specified number of days
+        days_to_increment = Lead
+        new_date = pd.to_datetime(date_start) + pd.Timedelta(days=Lead)
+        
+        # Define a colormap for the scatter plot
+        cmap = plt.cm.plasma
+        
+        # Select RMM1 and RMM2 data for the specified date range
+        pc1 = MJO_fobs['RMM1_obs'].sel(time=slice(date_start, new_date))
+        pc2 = MJO_fobs['RMM2_obs'].sel(time=slice(date_start, new_date))
+        
+        time_values = np.arange(len(pc1))
+        norm = mpl.colors.Normalize(vmin=0, vmax=len(time_values) - 1)
+        
+        # Plot the phase space diagram
+        plot_phase_space(ax)
+        
+        # Create a scatter plot indicating time progression
+        scatter = plt.scatter(pc1, pc2, c=time_values, cmap=cmap, s=50, norm=norm, alpha=0.75)
+        colorbar = plt.colorbar(scatter, label='Time')
+        colorbar.ax.tick_params(labelsize=14)  # Adjust fontsize of colorbar tick labels
+        # Overlay black lines to connect scatter plot points
+        plt.plot(pc1, pc2, color='black', alpha=0.4)
+        
+        
+        pc1_for = DS_for['RMM1'].sel(time=slice(date_start, new_date))
+        pc2_for = DS_for['RMM2'].sel(time=slice(date_start, new_date))
+        plt.plot(pc1_for, pc2_for, color='red', alpha=0.3)
+        pc1_em = DS_for['RMM1_emean'].sel(time=slice(date_start, new_date))
+        pc2_em = DS_for['RMM2_emean'].sel(time=slice(date_start, new_date))
+        plt.plot(pc1_em, pc2_em, color='red', alpha=0.8,linewidth=4)
+        scatter = plt.scatter(pc1_em, pc2_em, color='red',s=50)
+        
+        # Save the plot to a file
+        plt.savefig(self.yml_usr_info['output_plot_loc'] + '/' + './phase_space_MJO_forecast_' + date_start_str + '.png')
+        
+        # Close the plot
+        plt.close()

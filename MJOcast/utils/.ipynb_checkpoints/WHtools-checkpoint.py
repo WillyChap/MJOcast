@@ -298,3 +298,47 @@ def interpolate_obs(OBS_DS, lons_forecast):
             OBS_DS = OBS_DS.interp(longitude=np.array(lons_forecast)).fillna(0)
 
     return OBS_DS
+
+def plot_phase_space(ax):
+    """
+    Plots a phase space diagram with annotations and labels.
+    
+    Parameters:
+    ax (matplotlib.axes._axes.Axes): The matplotlib axes on which to plot the diagram.
+    
+    Returns:
+    matplotlib.axes._axes.Axes: The axes with the plotted phase space diagram.
+    """
+    # Set the x and y labels and limits
+    plt.xlabel('RMM1', fontsize=14)
+    plt.ylabel('RMM2', fontsize=14)
+    ax.tick_params(axis='both', which='major', labelsize=12)  # Increase tick label size
+    plt.xlim(-4, 4)
+    plt.ylim(-4, 4)
+    
+    # Plot diagonal and cross lines
+    plt.plot([-4, 4], [-4, 4], color='k')
+    plt.plot([-4, 4], [4, -4], color='k')
+    plt.plot([-4, 4], [0, 0], color='k')
+    plt.plot([0, 0], [-4, 4], color='k')
+    
+    # Add a circle to the diagram
+    circle1 = plt.Circle((0, 0), 1, color='k', fill=False)
+    ax.add_artist(circle1)
+    
+    # Add text annotations for different regions
+    plt.text(-1.4, -3, '2', fontsize=30, color='grey')
+    plt.text(1.4, -3, '3', fontsize=30, color='grey')
+    plt.text(-0.9, -3.8, 'Indian Ocean', fontsize=20, color='grey')
+    plt.text(2.6, -1, '4', fontsize=30, color='grey')
+    plt.text(2.6, 1, '5', fontsize=30, color='grey')
+    plt.text(3.5, -1, 'Maritime Continent', fontsize=20, color='grey', rotation='vertical')
+    plt.text(1.4, 2.6, '6', fontsize=30, color='grey')
+    plt.text(-1.4, 2.6, '7', fontsize=30, color='grey')
+    plt.text(-0.9, 3.6, 'Pacific Ocean', fontsize=20, color='grey')
+    plt.text(-2.6, 1, '8', fontsize=30, color='grey')
+    plt.text(-2.6, -1, '1', fontsize=30, color='grey')
+    plt.text(-3.8, -1, 'West. Hem. & Africa', fontsize=20, color='grey', rotation='vertical')
+    
+    # Return the axes with the plotted phase space diagram
+    return ax

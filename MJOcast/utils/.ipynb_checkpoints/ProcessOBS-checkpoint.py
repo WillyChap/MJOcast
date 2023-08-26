@@ -13,7 +13,7 @@ import re
 from datetime import datetime
 import sys
 from MJOcast.utils.WHtools import interpolate_obs
-from MJOcast.utils.WHtools import check_or_create_paths
+from MJOcast.utils.WHtools import check_or_create_paths, plot_phase_space
 
 class MJOobsProcessor:
     """An example docstring for a class definition."""
@@ -32,6 +32,8 @@ class MJOobsProcessor:
         self.forecast_lons = DSforexample['lon']
         self.base_dir = yml_data['base_dir']
         self.scaling_dict = scaling_dict
+        
+        self.Made_Observed_MJO = False
         pass
     
     
@@ -154,8 +156,8 @@ class MJOobsProcessor:
             #print(np.max(np.abs(eof1_olr)),'max abs1!')
             #print(np.max(np.abs(eof2_olr)),'max abs2!')
             # Find the longitude indices of maximum values for the first and second EOFs
-            maxolr1_loc = int(np.where(np.abs(eof1_olr.squeeze()) == np.max(np.abs(eof1_olr)))[0])
-            maxolr2_loc = int(np.where(np.abs(eof2_olr.squeeze()) == np.max(np.abs(eof2_olr)))[0])
+            maxolr1_loc = int(np.where(np.abs(eof1_olr.squeeze()) == np.max(np.abs(eof1_olr)))[0][0])
+            maxolr2_loc = int(np.where(np.abs(eof2_olr.squeeze()) == np.max(np.abs(eof2_olr)))[0][0])
 
             #print(maxolr1_loc,'loc max abs1!')
             #print(maxolr2_loc,'loc max abs2!')
@@ -374,6 +376,7 @@ class MJOobsProcessor:
         self.eof_dict = eof_dict
         self.obs_lons = OBS_DS['lon']
         self.varfrac = varfrac
+        self.Made_Observed_MJO = True
 
         return OBS_DS, eof_list, pcs, MJO_fobs, eof_dict
 
@@ -489,6 +492,62 @@ class MJOobsProcessor:
         plt.savefig(self.yml_usr_info['output_plot_loc'] + '/'+'./observed_eofs.png')
         plt.close()
         
+        
+    def plot_phase_space(self, date_start, days_forward):
+        """
+        Plot MJO RMM phase space with a scatter plot indicating the progression of time.
+        
+        Parameters:
+            date_start (str or pandas.Timestamp): Starting date for the plot.
+            days_forward (int): Number of days to project forward.
+        
+        Raises:
+            RuntimeError: If 'make_observed_MJO' hasn't been executed to create observational MJO data.
+        """
+        if not self.Made_Observed_MJO:
+            raise RuntimeError("Observational MJO must have been created by running 'make_observed_MJO'")
+        
+        # Create a deep copy of the input date string and convert it to pandas.Timestamp
+        date_start_str = copy.deepcopy(date_start)
+        date_start = pd.to_datetime(date_start)
+        
+        MJO_fobs = self.MJO_fobs
+        
+        # Create a new figure and axis for the plot
+        fig, ax = plt.subplots(figsize=(13, 10))
+        fig.suptitle('MJO RMM phase space, Start Date: ' + date_start_str, fontsize=14)
+        plt.title('')
+        
+        # Increment time by the specified number of days
+        days_to_increment = days_forward
+        new_date = pd.to_datetime(date_start) + pd.Timedelta(days=days_to_increment)
+        
+        # Define a colormap for the scatter plot
+        cmap = plt.cm.plasma
+        
+        # Select RMM1 and RMM2 data for the specified date range
+        pc1 = MJO_fobs['RMM1_obs'].sel(time=slice(date_start, new_date))
+        pc2 = MJO_fobs['RMM2_obs'].sel(time=slice(date_start, new_date))
+        
+        time_values = np.arange(len(pc1))
+        norm = mpl.colors.Normalize(vmin=0, vmax=len(time_values) - 1)
+        
+        # Plot the phase space diagram
+        plot_phase_space(ax)
+        
+        # Create a scatter plot indicating time progression
+        scatter = plt.scatter(pc1, pc2, c=time_values, cmap=cmap, s=50, norm=norm, alpha=0.75)
+        colorbar = plt.colorbar(scatter, label='Time')
+        colorbar.ax.tick_params(labelsize=14)  # Adjust fontsize of colorbar tick labels
+        # Overlay black lines to connect scatter plot points
+        plt.plot(pc1, pc2, color='black', alpha=0.4)
+        
+        # Save the plot to a file
+        plt.savefig(self.yml_usr_info['output_plot_loc'] + '/' + './phase_space_MJO_' + date_start_str + '.png')
+        
+        # Close the plot
+        plt.close()
+
         
     def check_obs_eofs(self):
         """
