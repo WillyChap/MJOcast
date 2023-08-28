@@ -169,10 +169,11 @@
 </div>
 <div class="section" id="mjoforecaster-documentation">
 <h1>MJOforecaster Documentation<a class="headerlink" href="#mjoforecaster-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Welcome to the official documentation for the MJOforecaster toolbox - your comprehensive solution for generating MJO hindcast forecasts based on Wheeler and Hendon 2004 methodology.</p>
+<p>Welcome to the official documentation for the MJOforecaster toolbox - your comprehensive python package for generating MJO hindcast forecasts based on Wheeler and Hendon 2004 Real-time Multivariate MJO (RMM) methodology.</p>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>The MJOforecaster is designed to streamline the process of creating accurate MJO hindcast forecasts. By leveraging empirical orthogonal function (EOF) analyses and specialized data processing techniques, this toolbox allows users to produce MJO forecasts using a user-defined range of parameters. This documentation provides comprehensive guidance on the toolbox’s functionalities, usage, and advanced features.</p>
+<p>The MJOforecaster aims to simplify the creation of precise MJO hindcast forecasts. Leveraging empirical orthogonal function (EOF) analyses and specialized data processing techniques, this toolbox empowers users to generate MJO forecasts within user-defined parameters. This documentation offers in-depth guidance on the toolbox’s functionalities, usage, and advanced features.</p>
+<p>To gain a clear understanding of the process for generating hindcasts of the RMM index, refer to the “examples” Jupyter notebooks available in the <strong>MJOcast</strong> GitHub repository. These notebooks provide a practical showcase, guiding users through the steps to master the art of forecast creation.</p>
 </div>
 <div class="section" id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this headline">¶</a></h2>
@@ -182,18 +183,79 @@
 <li><strong>Empirical Orthogonal Functions (EOFs):</strong> Utilize EOF analysis to identify MJO patterns and generate forecasts.</li>
 <li><strong>Metadata Management:</strong> Set attribute information for generated forecast files.</li>
 <li><strong>Comprehensive Customization:</strong> Customize forecasts by adjusting parameters, latitudinal range, and more.</li>
-<li><strong>Ease of Integration:</strong> Seamlessly integrate the MJOforecaster into your existing projects.</li>
 </ul>
+</div>
+<div class="section" id="what-you-need-to-get-started">
+<h2>What You Need to Get Started<a class="headerlink" href="#what-you-need-to-get-started" title="Permalink to this headline">¶</a></h2>
+<p>To begin your journey with MJOcast, make sure you have the following:</p>
+<ol class="arabic">
+<li><p class="first">Hindcast Files: Organize your hindcast files into different initializations, and name them with the initialization time (e.g., <cite>CESM2_init_May032002.nc</cite>).</p>
+<p>1.1. Forecast Files: These should encompass all ensembles and can be arranged in various grid orientations (such as lat, lon, ensemble, time or time, ensemble, lat, lon, etc.).</p>
+<p>1.2. Required Variables: Forecast files must include zonal wind at 200mb, zonal wind at 850mb, and Outgoing Longwave Radiation.</p>
+<p>1.3. Geographical Orientation: Files can be either in the -180°E to 180°W range or 0° to 360°W, and oriented from 90°S to 90°N or 90°N to 90°S.</p>
+</li>
+<li><p class="first">Positive Attitude: A can-do attitude will make your forecasting experience even more rewarding!</p>
+</li>
+</ol>
+<p><strong>Optional</strong></p>
+<ol class="arabic" start="3">
+<li><p class="first">User-Provided Observations: If you have your own observations, you can integrate them.</p>
+<p>3.1. Observation Generation: Consult the provided <strong>preprocessing folder</strong> in the code repository to generate observations from your own .nc files.</p>
+<p>3.2. Default Option: Alternatively, utilize the provided ERA5 observations (spanning 1950-2022) from the GitHub repository.</p>
+</li>
+<li><p class="first">User-Provided Lead-Time Dependent Climatology: If available, incorporate your own climatology.</p>
+<p>4.1. Climatology Generation: Explore the <strong>preprocessing folder</strong> in the code repository to create this lead-time dependent climatology.</p>
+<p>4.2. Value of Climatology: Discover the benefits of using this climatology as explained below. See <a class="reference internal" href="#why-leadtime"><span class="std std-ref">Why Provide a Lead-Time Dependent Model Climatology in S2S Forecasting?</span></a> for the details.</p>
+<p>4.3. Default Option: Alternatively, the ERA5 data (or provided observations) will be used.</p>
+</li>
+</ol>
+<p>Prepare these essentials to embark on your journey with MJOforecaster and unlock its full potential.</p>
 </div>
 <div class="section" id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
-<p>To get started with the MJOforecaster, follow these simple steps:</p>
+<p>Follow these simple steps to quickly get started:</p>
 <ol class="arabic simple">
-<li><strong>Installation:</strong> Install the toolbox using the provided installation instructions.</li>
-<li><strong>Configuration:</strong> Define your forecast parameters, data paths, and other settings in the YAML configuration file.</li>
-<li><strong>Usage:</strong> Import the <cite>MJOforecaster</cite> class and use its methods to create MJO hindcast forecasts.</li>
-<li><strong>Documentation:</strong> Refer to this documentation for detailed usage instructions, function explanations, and examples.</li>
+<li><strong>Installation:</strong> Install the toolbox using the provided <em>installation instructions</em> or simply type the following command in your terminal:</li>
 </ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>MJOcast
+</pre></div>
+</div>
+<ol class="arabic" start="2">
+<li><p class="first"><strong>Configuration:</strong> Customize your forecasting experience by configuring the toolbox:</p>
+<p>2.1. <em>Manual Configuration:</em> Edit the YAML configuration file directly to define your forecast parameters, data paths, and other settings.</p>
+<p>2.2. <em>YAML Generator Tool:</em> Alternatively, use the provided YAML generator tool in the preprocessor Jupyter Notebook for a user-friendly configuration process.</p>
+</li>
+<li><p class="first"><strong>Quick Start Usage:</strong> Begin forecasting with ease:</p>
+<p>Import the necessary modules:</p>
+</li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="kn">import</span> <span class="nn">MJOcast.utils.ProcessForecasts</span> <span class="k">as</span> <span class="nn">ProFo</span>
+ <span class="kn">import</span> <span class="nn">MJOcast.utils.ProcessOBS</span> <span class="k">as</span> <span class="nn">ProObs</span>
+
+<span class="n">Load</span> <span class="n">the</span> <span class="n">YAML</span> <span class="n">configuration</span> <span class="n">file</span><span class="p">:</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="n">yaml_file_path</span> <span class="o">=</span> <span class="s1">&#39;./settings.yaml&#39;</span>
+
+<span class="n">Create</span> <span class="n">Observational</span> <span class="n">MJO</span> <span class="ow">and</span> <span class="n">EOFs</span> <span class="p">[</span><span class="kn">from</span> <span class="nn">either</span> <span class="n">user</span> <span class="n">specified</span> <span class="n">data</span> <span class="ow">or</span> <span class="n">provide</span> <span class="n">ERA5</span><span class="p">]:</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MJO_obs</span> <span class="o">=</span> <span class="n">ProObs</span><span class="o">.</span><span class="n">MJOobsProcessor</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="p">)</span>
+<span class="n">OBS_DS</span><span class="p">,</span> <span class="n">eof_list</span><span class="p">,</span> <span class="n">pcs</span><span class="p">,</span> <span class="n">MJO_fobs</span><span class="p">,</span> <span class="n">eof_dict</span> <span class="o">=</span> <span class="n">MJO_obs</span><span class="o">.</span><span class="n">make_observed_MJO</span><span class="p">()</span>
+<span class="n">MJO_obs</span><span class="o">.</span><span class="n">plot_phase_space</span><span class="p">(</span><span class="s1">&#39;2001-01-01&#39;</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+<span class="n">Generate</span> <span class="n">Hindcast</span> <span class="o">.</span><span class="n">nc</span> <span class="n">Files</span> <span class="k">for</span> <span class="n">each</span> <span class="n">forecast</span><span class="p">:</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MJO_for</span> <span class="o">=</span> <span class="n">ProFo</span><span class="o">.</span><span class="n">MJOforecaster</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="p">,</span> <span class="n">MJO_obs</span><span class="o">.</span><span class="n">eof_dict</span><span class="p">,</span> <span class="n">MJO_obs</span><span class="o">.</span><span class="n">MJO_fobs</span><span class="p">)</span>
+<span class="n">DS_CESM_for</span><span class="p">,</span> <span class="n">OLR_cesm_anom_filtered</span><span class="p">,</span> <span class="n">U200_cesm_anom_filtered</span><span class="p">,</span> <span class="n">U850_cesm_anom_filtered</span> <span class="o">=</span> <span class="n">MJO_for</span><span class="o">.</span><span class="n">create_forecasts</span><span class="p">(</span><span class="n">num_files</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">MJO_for</span><span class="o">.</span><span class="n">plot_phase_space</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><strong>Documentation:</strong> For in-depth guidance, explore the code API documentation. It provides detailed usage instructions, function explanations, and examples.</li>
+</ol>
+<p>Follow these steps to make the most of MJOforecaster in your projects. Happy forecasting!</p>
 </div>
 <div class="section" id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
@@ -206,6 +268,60 @@
 <li><strong>API Reference:</strong> Detailed information about classes, methods, and parameters.</li>
 <li><strong>Examples:</strong> Real-world examples illustrating different aspects of the toolbox’s usage.</li>
 </ul>
+</div>
+</div>
+<div class="section" id="a-primer-on-the-wheeler-and-hendon-real-time-multivariate-mjo-rmm-index">
+<h1>A primer on the Wheeler and Hendon Real-time Multivariate MJO (RMM) Index<a class="headerlink" href="#a-primer-on-the-wheeler-and-hendon-real-time-multivariate-mjo-rmm-index" title="Permalink to this headline">¶</a></h1>
+<p>The Wheeler and Hendon Real-time Multivariate MJO (RMM) index is a widely used diagnostic tool for tracking and quantifying the Madden-Julian Oscillation (MJO), a significant tropical atmospheric phenomenon characterized by its eastward-propagating convective and atmospheric circulation anomalies.</p>
+</div>
+<div class="section" id="wheeler-and-hendon-real-time-multivariate-mjo-rmm-index">
+<h1>Wheeler and Hendon Real-time Multivariate MJO (RMM) Index<a class="headerlink" href="#wheeler-and-hendon-real-time-multivariate-mjo-rmm-index" title="Permalink to this headline">¶</a></h1>
+<p>The Wheeler and Hendon Real-time Multivariate MJO (RMM) index is a widely used diagnostic tool for tracking and quantifying the Madden-Julian Oscillation (MJO), a significant tropical atmospheric phenomenon characterized by its eastward-propagating convective and atmospheric circulation anomalies.</p>
+<div class="section" id="construction-of-the-wheeler-and-hendon-rmm-index">
+<h2>Construction of the Wheeler and Hendon RMM Index<a class="headerlink" href="#construction-of-the-wheeler-and-hendon-rmm-index" title="Permalink to this headline">¶</a></h2>
+<p>The RMM index is created through a principal component analysis (PCA) of key meteorological variables that capture the MJO’s signature across the tropical Indian Ocean and Western Pacific regions. These variables include:</p>
+<ol class="arabic simple">
+<li><strong>Outgoing Longwave Radiation (OLR):</strong> A measure of Earth’s thermal radiation emitted to space. Negative OLR anomalies indicate enhanced convection associated with the active phase of the MJO.</li>
+<li><strong>Zonal Wind at 850mb and 200mb:</strong> Zonal wind anomalies at these pressure levels indicate changes in atmospheric circulation due to the MJO. The phase relationship between these winds determines the MJO’s movement.</li>
+</ol>
+<p>The PCA results in two principal components (PCs), known as RMM1 and RMM2. RMM1 represents the MJO’s amplitude, while RMM2 captures its phase. Prior to PCA, anomalies of these variables are calculated by removing the 120-day mean. This process helps eliminate low-frequency variability, such as the effects of El Niño-Southern Oscillation (ENSO).</p>
+<p>The RMM index is formed by combining these PCs into a complex time series:</p>
+<ul class="simple">
+<li><strong>RMM Index = RMM1 + i * RMM2</strong></li>
+</ul>
+</div>
+<div class="section" id="interpretation-of-the-rmm-index">
+<h2>Interpretation of the RMM Index<a class="headerlink" href="#interpretation-of-the-rmm-index" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Amplitude (RMM1):</strong> Larger RMM1 values indicate stronger MJO activity. Negative values correspond to the suppressed phase (inactive MJO), and positive values indicate the active phase (enhanced convection and circulation).</li>
+<li><strong>Phase (RMM2):</strong> The RMM2 phase determines the geographic location of the MJO’s convection center. It’s categorized into eight phases, each linked to specific equatorial regions.</li>
+</ul>
+<p>The Wheeler and Hendon RMM index is a valuable tool for monitoring and forecasting the MJO’s behavior, aiding in predictions of tropical weather patterns, precipitation, and atmospheric conditions on various time scales.</p>
+<p>Note: This information is based on knowledge available up to September 2021. For the latest updates or changes, consult authoritative sources.</p>
+</div>
+<div class="section" id="forecasting-with-the-rmm-system">
+<h2>Forecasting with the RMM System<a class="headerlink" href="#forecasting-with-the-rmm-system" title="Permalink to this headline">¶</a></h2>
+<p>To effectively forecast with the RMM system, certain preprocessing steps are required to prepare both observational and forecast data. Here’s an overview of the necessary procedures:</p>
+<ol class="arabic simple">
+<li><strong>Incorporating the Past 120 Days (Reanalysis):</strong>
+The reanalysis data, such as ERA5, plays a pivotal role in refining forecasts. It’s crucial to append the preceding 120 days of reanalysis data to the forecast data. This historical context helps remove the 120-day mean, effectively eliminating low-frequency variability (e.g., ENSO effects) from the analysis.</li>
+<li><strong>Constructing Anomaly Fields:</strong>
+Once the forecast and appended reanalysis data are available, compute the anomaly fields by subtracting the climatological mean from each day’s data. This process isolates the deviations from the typical atmospheric conditions, allowing a more accurate analysis of MJO-related variability.</li>
+<li><strong>Projecting ERA5 Empirical Orthogonal Functions (EOFS) Modes:</strong>
+The next step involves projecting the modes of the Empirical Orthogonal Functions (EOFS) obtained from the ERA5 dataset onto the anomaly fields of the forecast data. This projection aligns the MJO-related variability between the observational and forecast datasets, facilitating comparison and enhancing forecast accuracy.</li>
+</ol>
+<p>By following these steps, the RMM system harmonizes historical and forecast data, removing spurious signals, and ensuring that the forecast captures the genuine MJO behavior. This preprocessing lays the foundation for robust and accurate MJO hindcast forecasts.</p>
+</div>
+<div class="section" id="why-provide-a-lead-time-dependent-model-climatology-in-s2s-forecasting">
+<span id="why-leadtime"></span><h2>Why Provide a Lead-Time Dependent Model Climatology in S2S Forecasting?<a class="headerlink" href="#why-provide-a-lead-time-dependent-model-climatology-in-s2s-forecasting" title="Permalink to this headline">¶</a></h2>
+<p>In Subseasonal-to-Seasonal (S2S) forecasting, incorporating a lead-time dependent model climatology offers several advantages that contribute to improved forecast accuracy and reliability. Here’s why it’s considered a beneficial practice:</p>
+<ol class="arabic simple">
+<li><strong>Reduced Biases:</strong> A standard climatology applied uniformly across all lead times might not account for the dynamic nature of atmospheric conditions, especially as a model slips into its own biased climatology, which is distinct from the real-world climatology. A lead-time dependent model climatology adapts to the evolving climate, mitigating biases that arise from using fixed observed climatological values.</li>
+<li><strong>Capturing Evolution:</strong> The climate system’s behavior changes as forecasts extend further into the future. A lead-time dependent climatology better captures this evolving nature, ensuring that the forecast is aligned with the expected conditions at various lead times.</li>
+<li><strong>Improved Skill:</strong> Incorporating a climatology that considers the lead time enhances the forecast’s skill by accounting for the removal of the biased evolution of the model’s climate. This leads to better capturing the evolving patterns, resulting in more accurate predictions.</li>
+<li><strong>Contextual Insights:</strong> A lead-time dependent climatology provides contextual insights into how the model’s climate system evolves over time. This understanding enhances the interpretation of forecast anomalies and aids in identifying significant departures from the norm.</li>
+</ol>
+<p>In summary, integrating a lead-time dependent model climatology acknowledges the changing nature of the model’s climate system and how it transitions into its own attractor space. By harnessing its variability, this approach enhances the accuracy and reliability of S2S forecasts. By adapting to evolving atmospheric conditions, this approach helps create more skillful and informative predictions.</p>
 </div>
 <div class="section" id="feedback-and-support">
 <h2>Feedback and Support<a class="headerlink" href="#feedback-and-support" title="Permalink to this headline">¶</a></h2>

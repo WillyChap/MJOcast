@@ -164,114 +164,157 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-WHtools">
-<span id="code-documentation"></span><h1>Code Documentation<a class="headerlink" href="#module-WHtools" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="WHtools.check_forecast_files">
-<code class="descclassname">WHtools.</code><code class="descname">check_forecast_files</code><span class="sig-paren">(</span><em>for_file_list</em>, <em>yml_usr_info</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.check_forecast_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the forecast files for required variables and ensemble dimension.</p>
+  <div class="section" id="module-ProcessOBS">
+<span id="code-documentation"></span><h1>Code Documentation<a class="headerlink" href="#module-ProcessOBS" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="ProcessOBS.MJOobsProcessor">
+<em class="property">class </em><code class="descclassname">ProcessOBS.</code><code class="descname">MJOobsProcessor</code><span class="sig-paren">(</span><em>yaml_file_path</em>, <em>scaling_dict=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>An example docstring for a class definition.</p>
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.check_MJO_orientation">
+<code class="descname">check_MJO_orientation</code><span class="sig-paren">(</span><em>eof_list</em>, <em>pcs</em>, <em>lons</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.check_MJO_orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the orientation of MJO’s first two Empirical Orthogonal Functions (EOFs).</p>
 <dl class="docutils">
 <dt>Parameters:</dt>
-<dd>for_file_list (str): File path of the forecast file to be checked.
-yml_usr_info (dict): Dictionary containing user settings from YAML file.</dd>
+<dd>eof_list (list): List of empirical orthogonal functions (EOFs).
+pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
+lons (array_like): Longitudes.</dd>
 <dt>Returns:</dt>
-<dd>Bingo (bool): True if the required variables are present, False otherwise.
-DS (xarray.Dataset): Updated dataset with added ‘ensemble’ dimension (if required).</dd>
+<dd>loc1 (int): Index of the first dominant EOF.
+loc2 (int): Index of the second dominant EOF.
+scale1 (int): Scaling factor for the first dominant EOF.
+scale2 (int): Scaling factor for the second dominant EOF.</dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="WHtools.check_lat_lon_coords">
-<code class="descclassname">WHtools.</code><code class="descname">check_lat_lon_coords</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.check_lat_lon_coords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if either “latitude/longitude” or “lat/lon” are in the coordinates of the xarray dataset.</p>
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.check_obs_eofs">
+<code class="descname">check_obs_eofs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.check_obs_eofs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the correlation between observed dataset EOF values and ERA5 EOF values for specific modes.</p>
+<p>This function opens an observed dataset file, interpolates the data, and calculates the correlation coefficients
+between specific EOF modes of the observed dataset and corresponding ERA5 EOF values. It compares the calculated
+correlations to a predefined threshold and raises an assertion error if any correlation is below the threshold.</p>
 <dl class="docutils">
-<dt>Parameters:</dt>
-<dd>data (xr.Dataset): Input xarray dataset.</dd>
 <dt>Returns:</dt>
-<dd>has_lat_lon_coords (bool): True if either “latitude/longitude” or “lat/lon” are in the coordinates, False otherwise.</dd>
+<dd>bool: True if all correlations are above the threshold, indicating a high correlation between observed and ERA5 EOF values.</dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="WHtools.check_or_create_paths">
-<code class="descclassname">WHtools.</code><code class="descname">check_or_create_paths</code><span class="sig-paren">(</span><em>yml_data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.check_or_create_paths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the paths and files required for the forecast data.</p>
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.get_phase_and_eofs">
+<code class="descname">get_phase_and_eofs</code><span class="sig-paren">(</span><em>eof_list</em>, <em>pcs</em>, <em>lons</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.get_phase_and_eofs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate MJO phase and related EOFs.</p>
 <dl class="docutils">
 <dt>Parameters:</dt>
-<dd>yml_data (dict): Dictionary containing information from the YAML file.</dd>
+<dd>eof_list (list): List of empirical orthogonal functions (EOFs).
+pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
+lons (array_like): Longitudes.</dd>
 <dt>Returns:</dt>
-<dd>DS (xarray.Dataset): Xarray dataset of the forecast data.</dd>
+<dd>tot_dict (dict): Dictionary containing MJO phase, RMM indices, and EOFs.</dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="WHtools.flip_lat_if_necessary">
-<code class="descclassname">WHtools.</code><code class="descname">flip_lat_if_necessary</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.flip_lat_if_necessary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the orientation of the latitude dimension in an xarray dataset and flip it if necessary.</p>
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.make_observed_MJO">
+<code class="descname">make_observed_MJO</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.make_observed_MJO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate observed MJO indices using observational data.</p>
 <dl class="docutils">
 <dt>Parameters:</dt>
-<dd>data (xr.Dataset): Input xarray dataset.</dd>
-<dt>Returns:</dt>
-<dd>data_flipped (xr.Dataset): Flipped xarray dataset, if necessary.</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="WHtools.func1">
-<code class="descclassname">WHtools.</code><code class="descname">func1</code><span class="sig-paren">(</span><em>arg1</em>, <em>arg2</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.func1" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function takes two arguements setting the first to the second</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>arg1</strong> – </li>
-<li><strong>arg2</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="WHtools.interpolate_obs">
-<code class="descclassname">WHtools.</code><code class="descname">interpolate_obs</code><span class="sig-paren">(</span><em>OBS_DS</em>, <em>lons_forecast</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.interpolate_obs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interpolate observed data to match forecast longitudes.</p>
-<dl class="docutils">
-<dt>Parameters:</dt>
-<dd>OBS_DS (xarray.Dataset): Xarray dataset containing the observed data.
+<dd>yml_data (dict): Dictionary containing YAML configuration data.
 lons_forecast (array_like): Longitudes of the forecast data.</dd>
 <dt>Returns:</dt>
-<dd>OBS_DS (xarray.Dataset): Interpolated xarray dataset of the observed data.</dd>
+<dd>OBS_DS (xarray.Dataset): Xarray dataset containing the observed data.
+eof_list (list): List of empirical orthogonal functions (EOFs).
+pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
+MJO_fobs (xarray.Dataset): Xarray dataset with observed MJO indices.</dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="WHtools.plot_phase_space">
-<code class="descclassname">WHtools.</code><code class="descname">plot_phase_space</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.plot_phase_space" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots a phase space diagram with annotations and labels.</p>
-<p>Parameters:
-ax (matplotlib.axes._axes.Axes): The matplotlib axes on which to plot the diagram.</p>
-<p>Returns:
-matplotlib.axes._axes.Axes: The axes with the plotted phase space diagram.</p>
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.pass_eof_scaling_factors">
+<code class="descname">pass_eof_scaling_factors</code><span class="sig-paren">(</span><em>scaling_dictionary=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.pass_eof_scaling_factors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the scaling factors for MJO observation EOF modes based on a user-defined dictionary.</p>
+<p>This function allows users to provide a dictionary containing scaling factors for EOF modes.
+If no scaling dictionary is provided, default scaling factors are set and determined for the observations.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>scaling_dict (dict, optional): A dictionary containing scaling factors for EOF modes.</dt>
+<dd>The dictionary should include ‘loc1’, ‘loc2’, ‘scale1’, and ‘scale2’ keys, representing
+the location of the EOF (0/1) and scaling factors (1 or -1) for the EOF modes 
+1 &amp; 2 in the WH RMM calculation.</dd>
+</dl>
+</dd>
+<dt>Raises:</dt>
+<dd>KeyError: If the provided scaling_dict is missing any of the required keys.</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="WHtools.switch_lon_to_0_360">
-<code class="descclassname">WHtools.</code><code class="descname">switch_lon_to_0_360</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.switch_lon_to_0_360" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the longitude values in the xarray dataset are in the range -180 to 180 degrees,
-and switch them to the range 0 to 360 degrees if needed.</p>
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.plot_eof">
+<code class="descname">plot_eof</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_eof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Customize the EOF plot axis.</p>
 <dl class="docutils">
 <dt>Parameters:</dt>
-<dd>data (xr.Dataset or xr.DataArray): Input xarray dataset or data array.</dd>
+<dd>ax (matplotlib.axes.Axes): The axis of the plot to customize.</dd>
 <dt>Returns:</dt>
-<dd>data_with_lon_0_360 (xr.Dataset or xr.DataArray): Xarray dataset or data array with longitude values
-in the range 0 to 360 degrees.</dd>
+<dd>ax (matplotlib.axes.Axes): The customized axis of the plot.</dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.plot_obs_eof">
+<code class="descname">plot_obs_eof</code><span class="sig-paren">(</span><em>eof_list</em>, <em>pcs</em>, <em>varfrac</em>, <em>lons</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_obs_eof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the spatial structures of EOF1, EOF2, and EOF3.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>eof_list (list): List of EOF arrays for OLR, U850, and U200.
+pcs (numpy.array): Array containing principal components.
+varfrac (numpy.array): Array containing the variance fraction values for each EOF.
+lons (numpy.array): Array of longitudes.</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.plot_phase_space">
+<code class="descname">plot_phase_space</code><span class="sig-paren">(</span><em>date_start</em>, <em>days_forward</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_phase_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot MJO RMM phase space with a scatter plot indicating the progression of time.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>date_start (str or pandas.Timestamp): Starting date for the plot.
+days_forward (int): Number of days to project forward.</dd>
+<dt>Raises:</dt>
+<dd>RuntimeError: If ‘make_observed_MJO’ hasn’t been executed to create observational MJO data.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.plot_varfrac">
+<code class="descname">plot_varfrac</code><span class="sig-paren">(</span><em>varfrac</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_varfrac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the fraction of the total variance represented by each EOF.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>varfrac (numpy.array): Array containing the variance fraction values for each EOF.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ProcessOBS.MJOobsProcessor.save_out_obs">
+<code class="descname">save_out_obs</code><span class="sig-paren">(</span><em>tot_dict</em>, <em>u200</em>, <em>u850</em>, <em>olr</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.save_out_obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the observed MJO dataset to a NetCDF file.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>tot_dict (dict): Dictionary containing MJO phase, RMM indices, and EOFs.
+u200 (xarray.DataArray): Xarray DataArray containing normalized u200 data.
+u850 (xarray.DataArray): Xarray DataArray containing normalized u850 data.
+olr (xarray.DataArray): Xarray DataArray containing normalized OLR data.</dd>
+<dt>Returns:</dt>
+<dd>MJO_fobs (xarray.Dataset): Xarray dataset containing the observed MJO data.</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <span class="target" id="module-ProcessForecasts"></span><dl class="class">
@@ -472,155 +515,112 @@ U200_cesm_anom_filterd (numpy.ndarray): Array containing filtered u200 anomalies
 </dl>
 </dd></dl>
 
-<span class="target" id="module-ProcessOBS"></span><dl class="class">
-<dt id="ProcessOBS.MJOobsProcessor">
-<em class="property">class </em><code class="descclassname">ProcessOBS.</code><code class="descname">MJOobsProcessor</code><span class="sig-paren">(</span><em>yaml_file_path</em>, <em>scaling_dict=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor" title="Permalink to this definition">¶</a></dt>
-<dd><p>An example docstring for a class definition.</p>
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.check_MJO_orientation">
-<code class="descname">check_MJO_orientation</code><span class="sig-paren">(</span><em>eof_list</em>, <em>pcs</em>, <em>lons</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.check_MJO_orientation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the orientation of MJO’s first two Empirical Orthogonal Functions (EOFs).</p>
+<span class="target" id="module-WHtools"></span><dl class="function">
+<dt id="WHtools.check_forecast_files">
+<code class="descclassname">WHtools.</code><code class="descname">check_forecast_files</code><span class="sig-paren">(</span><em>for_file_list</em>, <em>yml_usr_info</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.check_forecast_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the forecast files for required variables and ensemble dimension.</p>
 <dl class="docutils">
 <dt>Parameters:</dt>
-<dd>eof_list (list): List of empirical orthogonal functions (EOFs).
-pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
-lons (array_like): Longitudes.</dd>
+<dd>for_file_list (str): File path of the forecast file to be checked.
+yml_usr_info (dict): Dictionary containing user settings from YAML file.</dd>
 <dt>Returns:</dt>
-<dd>loc1 (int): Index of the first dominant EOF.
-loc2 (int): Index of the second dominant EOF.
-scale1 (int): Scaling factor for the first dominant EOF.
-scale2 (int): Scaling factor for the second dominant EOF.</dd>
+<dd>Bingo (bool): True if the required variables are present, False otherwise.
+DS (xarray.Dataset): Updated dataset with added ‘ensemble’ dimension (if required).</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.check_obs_eofs">
-<code class="descname">check_obs_eofs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.check_obs_eofs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the correlation between observed dataset EOF values and ERA5 EOF values for specific modes.</p>
-<p>This function opens an observed dataset file, interpolates the data, and calculates the correlation coefficients
-between specific EOF modes of the observed dataset and corresponding ERA5 EOF values. It compares the calculated
-correlations to a predefined threshold and raises an assertion error if any correlation is below the threshold.</p>
+<dl class="function">
+<dt id="WHtools.check_lat_lon_coords">
+<code class="descclassname">WHtools.</code><code class="descname">check_lat_lon_coords</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.check_lat_lon_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if either “latitude/longitude” or “lat/lon” are in the coordinates of the xarray dataset.</p>
 <dl class="docutils">
+<dt>Parameters:</dt>
+<dd>data (xr.Dataset): Input xarray dataset.</dd>
 <dt>Returns:</dt>
-<dd>bool: True if all correlations are above the threshold, indicating a high correlation between observed and ERA5 EOF values.</dd>
+<dd>has_lat_lon_coords (bool): True if either “latitude/longitude” or “lat/lon” are in the coordinates, False otherwise.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.get_phase_and_eofs">
-<code class="descname">get_phase_and_eofs</code><span class="sig-paren">(</span><em>eof_list</em>, <em>pcs</em>, <em>lons</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.get_phase_and_eofs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate MJO phase and related EOFs.</p>
+<dl class="function">
+<dt id="WHtools.check_or_create_paths">
+<code class="descclassname">WHtools.</code><code class="descname">check_or_create_paths</code><span class="sig-paren">(</span><em>yml_data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.check_or_create_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the paths and files required for the forecast data.</p>
 <dl class="docutils">
 <dt>Parameters:</dt>
-<dd>eof_list (list): List of empirical orthogonal functions (EOFs).
-pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
-lons (array_like): Longitudes.</dd>
+<dd>yml_data (dict): Dictionary containing information from the YAML file.</dd>
 <dt>Returns:</dt>
-<dd>tot_dict (dict): Dictionary containing MJO phase, RMM indices, and EOFs.</dd>
+<dd>DS (xarray.Dataset): Xarray dataset of the forecast data.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.make_observed_MJO">
-<code class="descname">make_observed_MJO</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.make_observed_MJO" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate observed MJO indices using observational data.</p>
+<dl class="function">
+<dt id="WHtools.flip_lat_if_necessary">
+<code class="descclassname">WHtools.</code><code class="descname">flip_lat_if_necessary</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.flip_lat_if_necessary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the orientation of the latitude dimension in an xarray dataset and flip it if necessary.</p>
 <dl class="docutils">
 <dt>Parameters:</dt>
-<dd>yml_data (dict): Dictionary containing YAML configuration data.
+<dd>data (xr.Dataset): Input xarray dataset.</dd>
+<dt>Returns:</dt>
+<dd>data_flipped (xr.Dataset): Flipped xarray dataset, if necessary.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="WHtools.func1">
+<code class="descclassname">WHtools.</code><code class="descname">func1</code><span class="sig-paren">(</span><em>arg1</em>, <em>arg2</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.func1" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes two arguements setting the first to the second</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>arg1</strong> – </li>
+<li><strong>arg2</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="WHtools.interpolate_obs">
+<code class="descclassname">WHtools.</code><code class="descname">interpolate_obs</code><span class="sig-paren">(</span><em>OBS_DS</em>, <em>lons_forecast</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.interpolate_obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate observed data to match forecast longitudes.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>OBS_DS (xarray.Dataset): Xarray dataset containing the observed data.
 lons_forecast (array_like): Longitudes of the forecast data.</dd>
 <dt>Returns:</dt>
-<dd>OBS_DS (xarray.Dataset): Xarray dataset containing the observed data.
-eof_list (list): List of empirical orthogonal functions (EOFs).
-pcs (xarray.Dataset): Xarray dataset containing the principal components (PCs).
-MJO_fobs (xarray.Dataset): Xarray dataset with observed MJO indices.</dd>
+<dd>OBS_DS (xarray.Dataset): Interpolated xarray dataset of the observed data.</dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.pass_eof_scaling_factors">
-<code class="descname">pass_eof_scaling_factors</code><span class="sig-paren">(</span><em>scaling_dictionary=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.pass_eof_scaling_factors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the scaling factors for MJO observation EOF modes based on a user-defined dictionary.</p>
-<p>This function allows users to provide a dictionary containing scaling factors for EOF modes.
-If no scaling dictionary is provided, default scaling factors are set and determined for the observations.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>scaling_dict (dict, optional): A dictionary containing scaling factors for EOF modes.</dt>
-<dd>The dictionary should include ‘loc1’, ‘loc2’, ‘scale1’, and ‘scale2’ keys, representing
-the location of the EOF (0/1) and scaling factors (1 or -1) for the EOF modes 
-1 &amp; 2 in the WH RMM calculation.</dd>
-</dl>
-</dd>
-<dt>Raises:</dt>
-<dd>KeyError: If the provided scaling_dict is missing any of the required keys.</dd>
-</dl>
+<dl class="function">
+<dt id="WHtools.plot_phase_space">
+<code class="descclassname">WHtools.</code><code class="descname">plot_phase_space</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.plot_phase_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a phase space diagram with annotations and labels.</p>
+<p>Parameters:
+ax (matplotlib.axes._axes.Axes): The matplotlib axes on which to plot the diagram.</p>
+<p>Returns:
+matplotlib.axes._axes.Axes: The axes with the plotted phase space diagram.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.plot_eof">
-<code class="descname">plot_eof</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_eof" title="Permalink to this definition">¶</a></dt>
-<dd><p>Customize the EOF plot axis.</p>
+<dl class="function">
+<dt id="WHtools.switch_lon_to_0_360">
+<code class="descclassname">WHtools.</code><code class="descname">switch_lon_to_0_360</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#WHtools.switch_lon_to_0_360" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the longitude values in the xarray dataset are in the range -180 to 180 degrees,
+and switch them to the range 0 to 360 degrees if needed.</p>
 <dl class="docutils">
 <dt>Parameters:</dt>
-<dd>ax (matplotlib.axes.Axes): The axis of the plot to customize.</dd>
+<dd>data (xr.Dataset or xr.DataArray): Input xarray dataset or data array.</dd>
 <dt>Returns:</dt>
-<dd>ax (matplotlib.axes.Axes): The customized axis of the plot.</dd>
+<dd>data_with_lon_0_360 (xr.Dataset or xr.DataArray): Xarray dataset or data array with longitude values
+in the range 0 to 360 degrees.</dd>
 </dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.plot_obs_eof">
-<code class="descname">plot_obs_eof</code><span class="sig-paren">(</span><em>eof_list</em>, <em>pcs</em>, <em>varfrac</em>, <em>lons</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_obs_eof" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the spatial structures of EOF1, EOF2, and EOF3.</p>
-<dl class="docutils">
-<dt>Parameters:</dt>
-<dd>eof_list (list): List of EOF arrays for OLR, U850, and U200.
-pcs (numpy.array): Array containing principal components.
-varfrac (numpy.array): Array containing the variance fraction values for each EOF.
-lons (numpy.array): Array of longitudes.</dd>
-<dt>Returns:</dt>
-<dd>None</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.plot_phase_space">
-<code class="descname">plot_phase_space</code><span class="sig-paren">(</span><em>date_start</em>, <em>days_forward</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_phase_space" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot MJO RMM phase space with a scatter plot indicating the progression of time.</p>
-<dl class="docutils">
-<dt>Parameters:</dt>
-<dd>date_start (str or pandas.Timestamp): Starting date for the plot.
-days_forward (int): Number of days to project forward.</dd>
-<dt>Raises:</dt>
-<dd>RuntimeError: If ‘make_observed_MJO’ hasn’t been executed to create observational MJO data.</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.plot_varfrac">
-<code class="descname">plot_varfrac</code><span class="sig-paren">(</span><em>varfrac</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.plot_varfrac" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the fraction of the total variance represented by each EOF.</p>
-<dl class="docutils">
-<dt>Parameters:</dt>
-<dd>varfrac (numpy.array): Array containing the variance fraction values for each EOF.</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="ProcessOBS.MJOobsProcessor.save_out_obs">
-<code class="descname">save_out_obs</code><span class="sig-paren">(</span><em>tot_dict</em>, <em>u200</em>, <em>u850</em>, <em>olr</em><span class="sig-paren">)</span><a class="headerlink" href="#ProcessOBS.MJOobsProcessor.save_out_obs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the observed MJO dataset to a NetCDF file.</p>
-<dl class="docutils">
-<dt>Parameters:</dt>
-<dd>tot_dict (dict): Dictionary containing MJO phase, RMM indices, and EOFs.
-u200 (xarray.DataArray): Xarray DataArray containing normalized u200 data.
-u850 (xarray.DataArray): Xarray DataArray containing normalized u850 data.
-olr (xarray.DataArray): Xarray DataArray containing normalized OLR data.</dd>
-<dt>Returns:</dt>
-<dd>MJO_fobs (xarray.Dataset): Xarray dataset containing the observed MJO data.</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </div>

@@ -1,11 +1,11 @@
 Code Documentation
 ==================
 
-.. automodule:: WHtools
+.. automodule:: ProcessOBS
     :members:
     
 .. automodule:: ProcessForecasts
     :members:
     
-.. automodule:: ProcessOBS
+.. automodule:: WHtools
     :members:
