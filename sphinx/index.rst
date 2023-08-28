@@ -18,6 +18,89 @@ The MJOforecaster aims to simplify the creation of precise MJO hindcast forecast
 
 To gain a clear understanding of the process for generating hindcasts of the RMM index, refer to the "examples" Jupyter notebooks available in the **MJOcast** GitHub repository. These notebooks provide a practical showcase, guiding users through the steps to master the art of forecast creation.
 
+Additionally, MJOcast provides the functionallity to make publication ready figures. See the *figures page* to see the provided figure options.
+
+When the MJOcast toolbox is run an individual MJO RMM forecast file will be created for each provided forecast. This file will also contain the observed RMM index for quick forecast assessment. The generated .nc file will look like so: 
+
+.. code-block:: python
+
+    ncdump -h *.nc 
+    
+    MJO_for = xr.Dataset(
+        {
+            "RMM1": (["time","number"],RMM1),
+            "RMM2": (["time","number"],RMM2),
+            "RMM1_emean": (["time"],RMM1_emean),
+            "RMM2_emean": (["time"],RMM2_emean),
+            "RMM1_obs":(["time"],RMM1_obs_cera20c),
+            "RMM2_obs":(["time"],RMM2_obs_cera20c),
+            "eofs_save":(["time","number",'neigs'],eofs_save),
+            "OLR_norm":(["time","number","longitude"],sv_olr), 
+            "eof1_olr":(["longitude"],np.array(self.MJO_fobs['eof1_olr'])),
+            "eof2_olr":(["longitude"],np.array(self.MJO_fobs['eof2_olr'])),
+            "eof1_u850":(["longitude"],np.array(self.MJO_fobs['eof1_u850'])),
+            "eof2_u850":(["longitude"],np.array(self.MJO_fobs['eof2_u850'])),
+            "eof1_u200":(["longitude"],np.array(self.MJO_fobs['eof2_u200'])),
+            "eof2_u200":(["longitude"],np.array(self.MJO_fobs['eof2_u200'])),
+            "u200_norm":(["time","number","longitude"],sv_u200), 
+            "u850_norm":(["time","number","longitude"],sv_u850),
+            "U200_cesm_anom":(["number","time","longitude"],np.array(U200_cesm_anom)), 
+            "U200_cesm_anom_filterd":(["number","time","longitude"],np.array(U200_cesm_anom_filterd)), 
+            "eig_vals":(['neigs'],solver.eigenvalues(neigs=neofs_save))
+
+        },
+        coords={
+            "time":OLR_cesm_anom_filterd_latmean.time,
+            "longitude":np.array(OLR_cesm_anom_filterd_latmean.lon),
+            "neigs":np.arange(0,neofs_save)
+        },)
+
+
+        MJO_for.attrs["title"] = "MJO RMM Forecast the projected eof(u850,u200,OLR)"
+                MJO_for.attrs["description"] = "MJO Forecast in the Prescribed Forecast dataset calculated as in Wheeler and Hendon 2004, a 120-day filter, 15S-15N averaged variables."
+        MJO_for.attrs["notes"] = "ONLY Variables RMM1 and RMM2 have been flipped and switched -from eofs_save- to match standard MJO conventions."
+
+        MJO_for.RMM1.attrs['units'] = 'stddev'
+        MJO_for.RMM1.attrs['standard_name'] = 'RMM1'
+        MJO_for.RMM1.attrs['long_name'] = 'Real-time Multivariate MJO Index 1'
+
+        MJO_for.RMM2.attrs['units'] = 'stddev'
+        MJO_for.RMM2.attrs['standard_name'] = 'RMM2'
+        MJO_for.RMM2.attrs['long_name'] = 'Real-time Multivariate MJO Index 2'
+
+        MJO_for.RMM1_emean.attrs['units'] = 'stddev'
+        MJO_for.RMM1_emean.attrs['long_name'] = 'ensemble mean RMM1 forecast'
+
+        MJO_for.RMM2_emean.attrs['units'] = 'stddev'
+        MJO_for.RMM2_emean.attrs['long_name'] = 'ensemble mean RMM2 forecast'
+
+        MJO_for.RMM1_obs.attrs['units'] = 'stddev'
+        MJO_for.RMM1_obs.attrs['long_name'] = 'Observed RMM1 (ERA-5 or provided obs file)'
+
+        MJO_for.RMM2_obs.attrs['units'] = 'stddev'
+        MJO_for.RMM2_obs.attrs['long_name'] = 'Observed RMM2 (ERA-5 or provided obs file)'
+
+        MJO_for.eofs_save.attrs['long_name'] = 'Empirical Orthogonal Functions (EOFs) of MJO observed variables'
+        MJO_for.eofs_save.attrs['description'] = 'Matrix containing the EOFs of MJO variables for each ensemble member'
+
+        MJO_for.OLR_norm.attrs['units'] = 'stddev'
+        MJO_for.OLR_norm.attrs['standard_name'] = 'forecast OLR - normalized'
+        MJO_for.OLR_norm.attrs['long_name'] = 'Normalized Outgoing Longwave Radiation'
+
+        MJO_for.u200_norm.attrs['units'] = 'stddev'
+        MJO_for.u200_norm.attrs['standard_name'] = 'forecast u200 normalized'
+        MJO_for.u200_norm.attrs['long_name'] = 'Normalized Zonal Wind at 200mb'
+
+        MJO_for.u850_norm.attrs['units'] = 'stddev'
+        MJO_for.u850_norm.attrs['standard_name'] = 'forecasts u850 normalized'
+        MJO_for.u850_norm.attrs['long_name'] = 'Normalized Zonal Wind at 850mb'
+
+        MJO_for.U200_cesm_anom.attrs['long_name'] = 'Zonal Wind Anomalies at 200mb'
+        MJO_for.U200_cesm_anom_filterd.attrs['long_name'] = '120 day Filtered Anomalies of all variables'
+
+        MJO_for.eig_vals.attrs['long_name'] = 'Eigenvalues of Empirical Orthogonal Functions (EOFs)'
+        MJO_for.eig_vals.attrs['description'] = 'Eigenvalues corresponding to the EOFs of MJO variables'
+
 
 Key Features
 ------------
@@ -86,27 +169,25 @@ Follow these simple steps to quickly get started:
     import MJOcast.utils.ProcessForecasts as ProFo 
     import MJOcast.utils.ProcessOBS as ProObs
 
-   Load the YAML configuration file:
+Load the YAML configuration file:
 
 .. code-block:: python
 
     yaml_file_path = './settings.yaml'
 
-   Create Observational MJO and EOFs [from either user specified data or provide ERA5]:
+Create Observational MJO and EOFs [from either user specified data or provide ERA5]:
 
 .. code-block:: python
 
     MJO_obs = ProObs.MJOobsProcessor(yaml_file_path)
     OBS_DS, eof_list, pcs, MJO_fobs, eof_dict = MJO_obs.make_observed_MJO()
-    MJO_obs.plot_phase_space('2001-01-01', 60)
 
-    Generate Hindcast .nc Files for each forecast:
+Generate Hindcast .nc Files for each forecast:
     
 .. code-block:: python
 
     MJO_for = ProFo.MJOforecaster(yaml_file_path, MJO_obs.eof_dict, MJO_obs.MJO_fobs)
     DS_CESM_for, OLR_cesm_anom_filtered, U200_cesm_anom_filtered, U850_cesm_anom_filtered = MJO_for.create_forecasts(num_files=1)
-    MJO_for.plot_phase_space(12, 15)
 
 4. **Documentation:** For in-depth guidance, explore the code API documentation. It provides detailed usage instructions, function explanations, and examples.
 

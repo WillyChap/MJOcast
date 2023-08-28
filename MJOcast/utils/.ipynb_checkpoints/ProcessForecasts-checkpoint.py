@@ -498,34 +498,55 @@ class MJOforecaster:
         },)
 
 
-        MJO_for.attrs["title"] = "CESM2 - MJO RMM Forecast eof(u850,u200,OLR)"
-        MJO_for.attrs["description"] = "MJO Forecast in the Prescribed Forecast dataset calculated as in Wheeler and Hendon 2004, a 120-day filter, 15S-15N averaged variables "
-        MJO_for.attrs["notes"] = " ONLY Variables RMM1 and RMM2 have been flipped and switched -from eofs_save- to match standard MJO conventions"
+        MJO_for.attrs["title"] = "MJO RMM Forecast the projected eof(u850,u200,OLR)"
+        xMJO_for.attrs["description"] = "MJO Forecast in the Prescribed Forecast dataset calculated as in Wheeler and Hendon 2004, a 120-day filter, 15S-15N averaged variables."
+        MJO_for.attrs["notes"] = "ONLY Variables RMM1 and RMM2 have been flipped and switched -from eofs_save- to match standard MJO conventions."
 
         MJO_for.RMM1.attrs['units'] = 'stddev'
-        MJO_for.RMM1.attrs['standard_name']='RMM1'
-        MJO_for.RMM1.attrs['long_name']='RMM1'
+        MJO_for.RMM1.attrs['standard_name'] = 'RMM1'
+        MJO_for.RMM1.attrs['long_name'] = 'Real-time Multivariate MJO Index 1'
 
         MJO_for.RMM2.attrs['units'] = 'stddev'
-        MJO_for.RMM2.attrs['standard_name']='RMM2'
-        MJO_for.RMM2.attrs['long_name']='RMM2'
+        MJO_for.RMM2.attrs['standard_name'] = 'RMM2'
+        MJO_for.RMM2.attrs['long_name'] = 'Real-time Multivariate MJO Index 2'
+
+        MJO_for.RMM1_emean.attrs['units'] = 'stddev'
+        MJO_for.RMM1_emean.attrs['long_name'] = 'ensemble mean RMM1 forecast'
+
+        MJO_for.RMM2_emean.attrs['units'] = 'stddev'
+        MJO_for.RMM2_emean.attrs['long_name'] = 'ensemble mean RMM2 forecast'
+
+        MJO_for.RMM1_obs.attrs['units'] = 'stddev'
+        MJO_for.RMM1_obs.attrs['long_name'] = 'Observed RMM1 (ERA-5 or provided obs file)'
+
+        MJO_for.RMM2_obs.attrs['units'] = 'stddev'
+        MJO_for.RMM2_obs.attrs['long_name'] = 'Observed RMM2 (ERA-5 or provided obs file)'
+
+        MJO_for.eofs_save.attrs['long_name'] = 'Empirical Orthogonal Functions (EOFs) of MJO observed variables'
+        MJO_for.eofs_save.attrs['description'] = 'Matrix containing the EOFs of MJO variables for each ensemble member'
 
         MJO_for.OLR_norm.attrs['units'] = 'stddev'
-        MJO_for.OLR_norm.attrs['standard_name']='OLR - normalized'
-        MJO_for.OLR_norm.attrs['long_name']='OLR - normalized'
+        MJO_for.OLR_norm.attrs['standard_name'] = 'forecast OLR - normalized'
+        MJO_for.OLR_norm.attrs['long_name'] = 'Normalized Outgoing Longwave Radiation'
 
         MJO_for.u200_norm.attrs['units'] = 'stddev'
-        MJO_for.u200_norm.attrs['standard_name']='u200 normalized'
-        MJO_for.u200_norm.attrs['long_name']='u200 normalized'
+        MJO_for.u200_norm.attrs['standard_name'] = 'forecast u200 normalized'
+        MJO_for.u200_norm.attrs['long_name'] = 'Normalized Zonal Wind at 200mb'
 
         MJO_for.u850_norm.attrs['units'] = 'stddev'
-        MJO_for.u850_norm.attrs['standard_name']='u200 normalized'
-        MJO_for.u850_norm.attrs['long_name']='u200 normalized'
+        MJO_for.u850_norm.attrs['standard_name'] = 'forecasts u850 normalized'
+        MJO_for.u850_norm.attrs['long_name'] = 'Normalized Zonal Wind at 850mb'
+
+        MJO_for.U200_cesm_anom.attrs['long_name'] = 'Zonal Wind Anomalies at 200mb'
+        MJO_for.U200_cesm_anom_filterd.attrs['long_name'] = '120 day Filtered Anomalies of all variables'
+
+        MJO_for.eig_vals.attrs['long_name'] = 'Eigenvalues of Empirical Orthogonal Functions (EOFs)'
+        MJO_for.eig_vals.attrs['description'] = 'Eigenvalues corresponding to the EOFs of MJO variables'
+
 
         MJO_for.to_netcdf(svname)
         print('saved: ',svname)  
         self.MJO_forecast_DS = MJO_for
-        
 
 
 
