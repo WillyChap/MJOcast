@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Wheeler and Hendon Primer &mdash; MJOcast 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lead Time Dependent Bias" href="WhyLead.html" />
+    <link rel="prev" title="Getting Started" href="gettingstarted.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> MJOcast
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Wheeler and Hendon Primer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#a-primer-on-the-wheeler-and-hendon-real-time-multivariate-mjo-rmm-index">A primer on the Wheeler and Hendon Real-time Multivariate MJO (RMM) Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wheeler-and-hendon-real-time-multivariate-mjo-rmm-index">Wheeler and Hendon Real-time Multivariate MJO (RMM) Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#construction-of-the-wheeler-and-hendon-rmm-index">Construction of the Wheeler and Hendon RMM Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interpretation-of-the-rmm-index">Interpretation of the RMM Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#forecasting-with-the-rmm-system">Forecasting with the RMM System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="WhyLead.html">Lead Time Dependent Bias</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RunningExample.html">Run Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JupyterExamples.html">Jupyter Notebook Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="summary.html">summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">Code Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MJOcast</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Wheeler and Hendon Primer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/WHprimer.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="wheeler-and-hendon-primer">
+<h1>Wheeler and Hendon Primer<a class="headerlink" href="#wheeler-and-hendon-primer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="a-primer-on-the-wheeler-and-hendon-real-time-multivariate-mjo-rmm-index">
+<h2>A primer on the Wheeler and Hendon Real-time Multivariate MJO (RMM) Index<a class="headerlink" href="#a-primer-on-the-wheeler-and-hendon-real-time-multivariate-mjo-rmm-index" title="Permalink to this headline">¶</a></h2>
+<p>The Wheeler and Hendon Real-time Multivariate MJO (RMM) index is a widely used diagnostic tool for tracking and quantifying the Madden-Julian Oscillation (MJO), a significant tropical atmospheric phenomenon characterized by its eastward-propagating convective and atmospheric circulation anomalies.</p>
+</div>
+<div class="section" id="wheeler-and-hendon-real-time-multivariate-mjo-rmm-index">
+<h2>Wheeler and Hendon Real-time Multivariate MJO (RMM) Index<a class="headerlink" href="#wheeler-and-hendon-real-time-multivariate-mjo-rmm-index" title="Permalink to this headline">¶</a></h2>
+<p>The Wheeler and Hendon Real-time Multivariate MJO (RMM) index is a widely used diagnostic tool for tracking and quantifying the Madden-Julian Oscillation (MJO), a significant tropical atmospheric phenomenon characterized by its eastward-propagating convective and atmospheric circulation anomalies.</p>
+</div>
+<div class="section" id="construction-of-the-wheeler-and-hendon-rmm-index">
+<h2>Construction of the Wheeler and Hendon RMM Index<a class="headerlink" href="#construction-of-the-wheeler-and-hendon-rmm-index" title="Permalink to this headline">¶</a></h2>
+<p>The RMM index is created through a principal component analysis (PCA) of key meteorological variables that capture the MJO’s signature across the tropical Indian Ocean and Western Pacific regions. These variables include:</p>
+<ol class="arabic simple">
+<li><strong>Outgoing Longwave Radiation (OLR):</strong> A measure of Earth’s thermal radiation emitted to space. Negative OLR anomalies indicate enhanced convection associated with the active phase of the MJO.</li>
+<li><strong>Zonal Wind at 850mb and 200mb:</strong> Zonal wind anomalies at these pressure levels indicate changes in atmospheric circulation due to the MJO. The phase relationship between these winds determines the MJO’s movement.</li>
+</ol>
+<p>The PCA results in two principal components (PCs), known as RMM1 and RMM2. RMM1 represents the MJO’s amplitude, while RMM2 captures its phase. Prior to PCA, anomalies of these variables are calculated by removing the 120-day mean. This process helps eliminate low-frequency variability, such as the effects of El Niño-Southern Oscillation (ENSO).</p>
+<p>The RMM index is formed by combining these PCs into a complex time series:</p>
+<ul class="simple">
+<li><strong>RMM Index = RMM1 + i * RMM2</strong></li>
+</ul>
+</div>
+<div class="section" id="interpretation-of-the-rmm-index">
+<h2>Interpretation of the RMM Index<a class="headerlink" href="#interpretation-of-the-rmm-index" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Amplitude (RMM1):</strong> Larger RMM1 values indicate stronger MJO activity. Negative values correspond to the suppressed phase (inactive MJO), and positive values indicate the active phase (enhanced convection and circulation).</li>
+<li><strong>Phase (RMM2):</strong> The RMM2 phase determines the geographic location of the MJO’s convection center. It’s categorized into eight phases, each linked to specific equatorial regions.</li>
+</ul>
+<p>The Wheeler and Hendon RMM index is a valuable tool for monitoring and forecasting the MJO’s behavior, aiding in predictions of tropical weather patterns, precipitation, and atmospheric conditions on various time scales.</p>
+<p>Note: This information is based on knowledge available up to September 2021. For the latest updates or changes, consult authoritative sources.</p>
+</div>
+<div class="section" id="forecasting-with-the-rmm-system">
+<h2>Forecasting with the RMM System<a class="headerlink" href="#forecasting-with-the-rmm-system" title="Permalink to this headline">¶</a></h2>
+<p>To effectively forecast with the RMM system, certain preprocessing steps are required to prepare both observational and forecast data. Here’s an overview of the necessary procedures:</p>
+<ol class="arabic simple">
+<li><strong>Incorporating the Past 120 Days (Reanalysis):</strong>
+The reanalysis data, such as ERA5, plays a pivotal role in refining forecasts. It’s crucial to append the preceding 120 days of reanalysis data to the forecast data. This historical context helps remove the 120-day mean, effectively eliminating low-frequency variability (e.g., ENSO effects) from the analysis.</li>
+<li><strong>Constructing Anomaly Fields:</strong>
+Once the forecast and appended reanalysis data are available, compute the anomaly fields by subtracting the climatological mean from each day’s data. This process isolates the deviations from the typical atmospheric conditions, allowing a more accurate analysis of MJO-related variability.</li>
+<li><strong>Projecting ERA5 Empirical Orthogonal Functions (EOFS) Modes:</strong>
+The next step involves projecting the modes of the Empirical Orthogonal Functions (EOFS) obtained from the ERA5 dataset onto the anomaly fields of the forecast data. This projection aligns the MJO-related variability between the observational and forecast datasets, facilitating comparison and enhancing forecast accuracy.</li>
+</ol>
+<p>By following these steps, the RMM system harmonizes historical and forecast data, removing spurious signals, and ensuring that the forecast captures the genuine MJO behavior. This preprocessing lays the foundation for robust and accurate MJO hindcast forecasts.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="WhyLead.html" class="btn btn-neutral float-right" title="Lead Time Dependent Bias" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="gettingstarted.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2023, Will Chapman.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

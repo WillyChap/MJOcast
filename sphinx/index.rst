@@ -9,7 +9,7 @@ Welcome to MJOcast's documentation!
 MJOforecaster Documentation
 ===========================
 
-Welcome to the official documentation for the MJOforecaster toolbox - your comprehensive python package for generating MJO hindcast forecasts based on Wheeler and Hendon 2004 Real-time Multivariate MJO (RMM) methodology. 
+Welcome to the official documentation for the MJOforecaster toolbox - your comprehensive python package for generating MJO hindcast forecasts based on Wheeler and Hendon 2004 Real-time Multivariate MJO (RMM) methodology. For a primer on the WH RMM index, and it's forecasting see - :doc:`WHprimer`.
 
 Overview
 --------
@@ -288,6 +288,7 @@ This is a descriptions of this website...
    :caption: Contents:
    
    gettingstarted
+   WHprimer
    WhyLead
    RunningExample
    JupyterExamples
