@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Jupyter Notebook Examples &mdash; MJOcast 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="summary" href="summary.html" />
+    <link rel="prev" title="Run Examples" href="RunningExample.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> MJOcast
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="WhyLead.html">Lead Time Dependent Bias</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RunningExample.html">Run Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Jupyter Notebook Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#start-up">Start up</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="summary.html">summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">Code Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MJOcast</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Jupyter Notebook Examples</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/JupyterExamples.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="jupyter-notebook-examples">
+<h1>Jupyter Notebook Examples<a class="headerlink" href="#jupyter-notebook-examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="start-up">
+<h2>Start up<a class="headerlink" href="#start-up" title="Permalink to this headline">¶</a></h2>
+<p>Follow these simple steps to quickly get started:</p>
+<ol class="arabic simple">
+<li><strong>Installation:</strong> Install the toolbox using the provided <em>installation instructions</em> or simply type the following command in your terminal:</li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>MJOcast
+</pre></div>
+</div>
+<ol class="arabic" start="2">
+<li><p class="first"><strong>Configuration:</strong> Customize your forecasting experience by configuring the toolbox:</p>
+<p>2.1. <em>Manual Configuration:</em> Edit the YAML configuration file directly to define your forecast parameters, data paths, and other settings.</p>
+<p>2.2. <em>YAML Generator Tool:</em> Alternatively, use the provided YAML generator tool in the preprocessor Jupyter Notebook for a user-friendly configuration process.</p>
+</li>
+<li><p class="first"><strong>Quick Start Usage:</strong> Begin forecasting with ease:</p>
+<p>Import the necessary modules:</p>
+</li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MJOcast.utils.ProcessForecasts</span> <span class="k">as</span> <span class="nn">ProFo</span>
+<span class="kn">import</span> <span class="nn">MJOcast.utils.ProcessOBS</span> <span class="k">as</span> <span class="nn">ProObs</span>
+</pre></div>
+</div>
+<p>Load the YAML configuration file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">yaml_file_path</span> <span class="o">=</span> <span class="s1">&#39;./settings.yaml&#39;</span>
+</pre></div>
+</div>
+<p>Create Observational MJO and EOFs [from either user specified data or provide ERA5]:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MJO_obs</span> <span class="o">=</span> <span class="n">ProObs</span><span class="o">.</span><span class="n">MJOobsProcessor</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="p">)</span>
+<span class="n">OBS_DS</span><span class="p">,</span> <span class="n">eof_list</span><span class="p">,</span> <span class="n">pcs</span><span class="p">,</span> <span class="n">MJO_fobs</span><span class="p">,</span> <span class="n">eof_dict</span> <span class="o">=</span> <span class="n">MJO_obs</span><span class="o">.</span><span class="n">make_observed_MJO</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Generate Hindcast .nc Files for each forecast:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MJO_for</span> <span class="o">=</span> <span class="n">ProFo</span><span class="o">.</span><span class="n">MJOforecaster</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="p">,</span> <span class="n">MJO_obs</span><span class="o">.</span><span class="n">eof_dict</span><span class="p">,</span> <span class="n">MJO_obs</span><span class="o">.</span><span class="n">MJO_fobs</span><span class="p">)</span>
+<span class="n">DS_CESM_for</span><span class="p">,</span> <span class="n">OLR_cesm_anom_filtered</span><span class="p">,</span> <span class="n">U200_cesm_anom_filtered</span><span class="p">,</span> <span class="n">U850_cesm_anom_filtered</span> <span class="o">=</span> <span class="n">MJO_for</span><span class="o">.</span><span class="n">create_forecasts</span><span class="p">(</span><span class="n">num_files</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><strong>Documentation:</strong> For in-depth guidance, explore the code API documentation. It provides detailed usage instructions, function explanations, and examples.</li>
+</ol>
+<p>Follow these steps to make the most of MJOforecaster in your projects. Happy forecasting!</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="summary.html" class="btn btn-neutral float-right" title="summary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="RunningExample.html" class="btn btn-neutral float-left" title="Run Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2023, Will Chapman.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

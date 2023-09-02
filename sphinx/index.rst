@@ -137,7 +137,7 @@ To begin your journey with MJOcast, make sure you have the following:
 
    4.1. Climatology Generation: Explore the **preprocessing folder** in the code repository to create this lead-time dependent climatology.
    
-   4.2. Value of Climatology: Discover the benefits of using this climatology as explained below. See :any:`Why_leadtime` for the details.
+   4.2. Value of Climatology: Discover the benefits of using this climatology as explained below. See - :doc:`WhyLead` for the details.
    
    4.3. Default Option: Alternatively, the ERA5 data (or provided observations) will be used.
 
@@ -278,7 +278,7 @@ In summary, integrating a lead-time dependent model climatology acknowledges the
 Feedback and Support
 ---------------------
 
-We value your feedback! If you have any questions, suggestions, or issues while using the MJOforecaster toolbox, don't hesitate to reach out to us via `GitHub Issues <https://github.com/your-repo/issues>`_.
+We value your feedback! If you have any questions, suggestions, or issues while using the MJOforecaster toolbox, don't hesitate to reach out to us via `GitHub Issues <https://github.com/WillyChap/MJOcast/issues>`_.
 
 Get ready to revolutionize your MJO hindcasting process with the MJOforecaster toolbox!
 This is a descriptions of this website... 
@@ -287,6 +287,10 @@ This is a descriptions of this website...
    :maxdepth: 4
    :caption: Contents:
    
+   gettingstarted
+   WhyLead
+   RunningExample
+   JupyterExamples
    summary
    code
 

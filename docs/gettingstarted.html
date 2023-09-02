@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Search &mdash; MJOcast 0.0.1 documentation</title>
+  <title>Getting Started &mdash; MJOcast 0.0.1 documentation</title>
   
 
   
@@ -23,7 +23,6 @@
   
 
   
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -47,10 +46,10 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <script type="text/javascript" src="_static/searchtools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lead Time Dependent Bias" href="WhyLead.html" />
+    <link rel="prev" title="Welcome to MJOcast’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -77,7 +76,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -96,8 +95,11 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-need-to-get-started">What You Need to Get Started</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="WhyLead.html">Lead Time Dependent Bias</a></li>
 <li class="toctree-l1"><a class="reference internal" href="RunningExample.html">Run Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="JupyterExamples.html">Jupyter Notebook Examples</a></li>
@@ -151,10 +153,14 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Getting Started</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/gettingstarted.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -166,23 +172,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-you-need-to-get-started">
+<h2>What You Need to Get Started<a class="headerlink" href="#what-you-need-to-get-started" title="Permalink to this headline">¶</a></h2>
+<p>To begin your journey with MJOcast, make sure you have the following:</p>
+<ol class="arabic">
+<li><p class="first">Hindcast Files: Organize your hindcast files into different initializations, and name them with the initialization time (e.g., <cite>CESM2_init_May032002.nc</cite>).</p>
+<p>1.1. Forecast Files: These should encompass all ensembles and can be arranged in various grid orientations (such as lat, lon, ensemble, time or time, ensemble, lat, lon, etc.).</p>
+<p>1.2. Required Variables: Forecast files must include zonal wind at 200mb, zonal wind at 850mb, and Outgoing Longwave Radiation.</p>
+<p>1.3. Geographical Orientation: Files can be either in the -180°E to 180°W range or 0° to 360°W, and oriented from 90°S to 90°N or 90°N to 90°S.</p>
+</li>
+<li><p class="first">Positive Attitude: A can-do attitude will make your forecasting experience even more rewarding!</p>
+</li>
+</ol>
+<p><strong>Optional</strong></p>
+<ol class="arabic" start="3">
+<li><p class="first">User-Provided Observations: If you have your own observations, you can integrate them.</p>
+<p>3.1. Observation Generation: Consult the provided <strong>preprocessing folder</strong> in the code repository to generate observations from your own .nc files.</p>
+<p>3.2. Default Option: Alternatively, utilize the provided ERA5 observations (spanning 1950-2022) from the GitHub repository.</p>
+</li>
+<li><p class="first">User-Provided Lead-Time Dependent Climatology: If available, incorporate your own climatology.</p>
+<p>4.1. Climatology Generation: Explore the <strong>preprocessing folder</strong> in the code repository to create this lead-time dependent climatology.</p>
+<p>4.2. Value of Climatology: Discover the benefits of using this climatology as explained below. See <a class="reference internal" href="index.html#why-leadtime"><span class="std std-ref">Why Provide a Lead-Time Dependent Model Climatology in S2S Forecasting?</span></a> for the details.</p>
+<p>4.3. Default Option: Alternatively, the ERA5 data (or provided observations) will be used.</p>
+</li>
+</ol>
+<p>Prepare these essentials to embark on your journey with MJOforecaster and unlock its full potential.</p>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="WhyLead.html" class="btn btn-neutral float-right" title="Lead Time Dependent Bias" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to MJOcast’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 
@@ -219,14 +247,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>
