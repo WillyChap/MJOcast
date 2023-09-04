@@ -499,7 +499,7 @@ class MJOforecaster:
 
 
         MJO_for.attrs["title"] = "MJO RMM Forecast the projected eof(u850,u200,OLR)"
-        xMJO_for.attrs["description"] = "MJO Forecast in the Prescribed Forecast dataset calculated as in Wheeler and Hendon 2004, a 120-day filter, 15S-15N averaged variables."
+        MJO_for.attrs["description"] = "MJO Forecast in the Prescribed Forecast dataset calculated as in Wheeler and Hendon 2004, a 120-day filter, 15S-15N averaged variables."
         MJO_for.attrs["notes"] = "ONLY Variables RMM1 and RMM2 have been flipped and switched -from eofs_save- to match standard MJO conventions."
 
         MJO_for.RMM1.attrs['units'] = 'stddev'
