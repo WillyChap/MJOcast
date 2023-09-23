@@ -20,6 +20,67 @@ def func1(arg1,arg2):
     """
     
     arg1 = arg2
+    
+def Create_Driver_Yaml(filename, user_, base_dir, use_era5, usr_named_obs, obs_data_loc, forecast_data_loc, forecast_data_name_str, 
+                forecast_olr_name, forecast_u200_name, forecast_u850_name, forecast_ensemble_dimension_name, 
+                output_plot_loc, output_files_loc, output_files_string, use_forecast_climo, use_observed_climo, 
+                regenerate_climo, use_dask_for_climo):
+    """
+    Create a YAML configuration file from the provided parameters.
+
+    Parameters:
+    filename (str): The name of the YAML file to be generated.
+    user_ (str): The user name.
+    base_dir (str): The base directory.
+    use_era5 (bool): Whether to use ERA5 data.
+    usr_named_obs (str): Alternative name for observations file.
+    obs_data_loc (str): Location of observation data.
+    forecast_data_loc (str): Location of forecast data.
+    forecast_data_name_str (str): String pattern for forecast data filenames.
+    forecast_olr_name (str): Name of OLR forecast variable.
+    forecast_u200_name (str): Name of 200mb wind forecast variable.
+    forecast_u850_name (str): Name of 850mb wind forecast variable.
+    forecast_ensemble_dimension_name (str): Name of the ensemble dimension.
+    output_plot_loc (str): Location for output plots.
+    output_files_loc (str): Location for output files.
+    output_files_string (str): String for naming MJO forecast files.
+    use_forecast_climo (bool): Whether to use forecast climatology.
+    use_observed_climo (bool): Whether to use observed climatology.
+    regenerate_climo (bool): Whether to regenerate climatology.
+    use_dask_for_climo (bool): Whether to use Dask for climatology processing.
+    """
+    Total_yaml = {
+        'user': user_,
+        'base_dir': base_dir,
+        'user_defined_info': {
+            'use_era5': use_era5,
+            'usr_named_obs': usr_named_obs,
+            'obs_data_loc': obs_data_loc,
+            'forecast_data_loc': forecast_data_loc,
+            'forecast_data_name_str': forecast_data_name_str,
+            'forecast_olr_name': forecast_olr_name,
+            'forecast_u200_name': forecast_u200_name,
+            'forecast_u850_name': forecast_u850_name,
+            'forecast_ensemble_dimension_name': forecast_ensemble_dimension_name,
+            'output_plot_loc': output_plot_loc,
+            'output_files_loc': output_files_loc,
+            'output_files_string': output_files_string,
+            'use_forecast_climo': use_forecast_climo,
+            'use_observed_climo': use_observed_climo,
+            'regenerate_climo': regenerate_climo,
+            'use_dask_for_climo': use_dask_for_climo,
+            'regenerate_climo': regenerate_climo
+        }
+    }
+
+    with open(filename, 'w') as yaml_file:
+        yaml.dump(Total_yaml, yaml_file, default_flow_style=False)
+
+# Call the function with the desired variable values and filename
+Create_Yaml('output.yaml', user_, base_dir, use_era5, usr_named_obs, obs_data_loc, forecast_data_loc, forecast_data_name_str, 
+            forecast_olr_name, forecast_u200_name, forecast_u850_name, forecast_ensemble_dimension_name, 
+            output_plot_loc, output_files_loc, output_files_string, use_forecast_climo, use_observed_climo, 
+            regenerate_climo, use_dask_for_climo)
 
 
 def flip_lat_if_necessary(data):
