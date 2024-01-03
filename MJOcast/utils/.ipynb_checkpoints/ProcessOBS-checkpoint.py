@@ -402,6 +402,13 @@ class MJOobsProcessor:
         plt.ylim(np.min(varfrac), np.max(varfrac) + 0.01)
 
         # Save the plot as an image
+        # Check if the directory exists
+        output_plot_loc = self.yml_usr_info['output_plot_loc']
+        if not os.path.exists(output_plot_loc):
+            # If not, create the directory
+            os.makedirs(output_plot_loc)
+            print(f"Directory '{output_plot_loc}' created successfully.")
+       
         plt.savefig(self.yml_usr_info['output_plot_loc'] + '/'+'/observed_variance_fraction.png') 
         plt.close()
 
@@ -489,6 +496,11 @@ class MJOobsProcessor:
         self.plot_eof(ax)
 
         # Save the plot as an image
+        output_plot_loc = self.yml_usr_info['output_plot_loc']
+        if not os.path.exists(output_plot_loc):
+            # If not, create the directory
+            os.makedirs(output_plot_loc)
+            print(f"Directory '{output_plot_loc}' created successfully.")
         plt.savefig(self.yml_usr_info['output_plot_loc'] + '/'+'./observed_eofs.png')
         plt.close()
         
@@ -543,6 +555,11 @@ class MJOobsProcessor:
         plt.plot(pc1, pc2, color='black', alpha=0.4)
         
         # Save the plot to a file
+        output_plot_loc = self.yml_usr_info['output_plot_loc']
+        if not os.path.exists(output_plot_loc):
+            # If not, create the directory
+            os.makedirs(output_plot_loc)
+            print(f"Directory '{output_plot_loc}' created successfully.")
         plt.savefig(self.yml_usr_info['output_plot_loc'] + '/' + './phase_space_MJO_' + date_start_str + '.png')
         
         # Close the plot

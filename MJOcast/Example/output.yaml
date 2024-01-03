@@ -1,0 +1,19 @@
+base_dir: /glade/work/wchapman/MJOcast/MJOcast
+user: wchapman
+user_defined_info:
+  forecast_data_loc: /glade/campaign/cgd/amp/wchapman/MJO_S2S_CESM2/p1
+  forecast_data_name_str: S2Shindcast_cesm2cam6vs_MJOvars_*.nc
+  forecast_ensemble_dimension_name: ensemble
+  forecast_olr_name: rlut
+  forecast_u200_name: ua_200
+  forecast_u850_name: ua_850
+  obs_data_loc: ./Observations/
+  output_files_loc: /glade/campaign/cgd/amp/wchapman/MJO_S2S_CESM2/RMM_forecast/ERA5/
+  output_files_string: /MJO_Forecast_Init
+  output_plot_loc: ./output_plots/
+  regenerate_climo: false
+  use_dask_for_climo: true
+  use_era5: true
+  use_forecast_climo: true
+  use_observed_climo: false
+  usr_named_obs: alternative_name_of_obs.nc
