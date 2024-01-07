@@ -34,11 +34,13 @@ The following optional dependency sets can additionaly be installed by adding ["
   * *dev*: packages that are needed for the further development, documentation and testing of MJOcast.
 
 Examples: 
+
 .. code-block:: bash
 
     pip3 install MJOcast[full_func]
 
 or
+
 .. code-block:: bash
 
     pip3 install -e .[dev]

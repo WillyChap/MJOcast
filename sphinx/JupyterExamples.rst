@@ -1,19 +1,23 @@
 Jupyter Notebook Examples
 =========================
 
+To see the jupyter notebooks in action visit here: 
+
 Link to Jupyter Notebook Examples: `Jupyter Examples <https://github.com/WillyChap/MJOcast/tree/main/MJOcast/Example>`_.
 
 Start up
 ---------------
-Follow these simple steps to quickly get started in a jupter notebook:
+Follow these simple steps to quickly get started in a jupyter notebook:
 
 0. ** READ THIS FIRST:** :
+
+NOTE: You must first have your MJOcast environment activated.
 
 This notebook shows the user how to drive the MJOcast on a single forecast file, and create desired output file. 
 
 In this example, the output file has lead-time dependent bias removed, based on the lead time dependent climo file.
 
-This forecast file climo file was made with teh Preprocessing_Tools, and MUST be completed prior to making this work on your files
+This forecast file climo file was made with the `Preprocessing_Tools <https://github.com/WillyChap/MJOcast/tree/main/MJOcast/Preprocessing_Tools>`_., and MUST be completed prior to making this work on your files
 
 
 1. **Install Packages:** :
@@ -32,12 +36,10 @@ This forecast file climo file was made with teh Preprocessing_Tools, and MUST be
       
 2. **Configuration:** Customize your forecasting experience by configuring the toolbox:
 
-   2.1. *Manual Configuration:* Edit the YAML configuration file directly to define your forecast parameters, data paths, and other settings.
-
-   2.2. *YAML Generator Tool:* Alternatively, use the provided YAML generator tool in the preprocessor Jupyter Notebook for a user-friendly configuration process.
+   2.1. *Manual Configuration:* Edit the YAML configuration file directly to define your forecast parameters, data paths, and other settings. `Jupyter With-YAML Examples <https://github.com/WillyChap/MJOcast/blob/main/MJOcast/Example/Example_WithYaml.ipynb>`_.
    
-   2.2 example:
-   
+   2.2. *YAML Generator Tool:* Alternatively, use the provided YAML generator tool in the preprocessor Jupyter Notebook for a user-friendly configuration process.  `Jupyter NO-YAML Examples <https://github.com/WillyChap/MJOcast/blob/main/MJOcast/Example/Example_WithoutYaml.ipynb>`_.
+      
 .. code-block:: python
     
     # YAML file specifying output configuration

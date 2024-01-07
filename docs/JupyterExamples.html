@@ -201,16 +201,18 @@
 </style>
 <div class="section" id="jupyter-notebook-examples">
 <h1>Jupyter Notebook Examples<a class="headerlink" href="#jupyter-notebook-examples" title="Permalink to this headline">¶</a></h1>
+<p>To see the jupyter notebooks in action visit here:</p>
 <p>Link to Jupyter Notebook Examples: <a class="reference external" href="https://github.com/WillyChap/MJOcast/tree/main/MJOcast/Example">Jupyter Examples</a>.</p>
 <div class="section" id="start-up">
 <h2>Start up<a class="headerlink" href="#start-up" title="Permalink to this headline">¶</a></h2>
-<p>Follow these simple steps to quickly get started in a jupter notebook:</p>
+<p>Follow these simple steps to quickly get started in a jupyter notebook:</p>
 <ol class="arabic simple" start="0">
 <li>** READ THIS FIRST:** :</li>
 </ol>
+<p>NOTE: You must first have your MJOcast environment activated.</p>
 <p>This notebook shows the user how to drive the MJOcast on a single forecast file, and create desired output file.</p>
 <p>In this example, the output file has lead-time dependent bias removed, based on the lead time dependent climo file.</p>
-<p>This forecast file climo file was made with teh Preprocessing_Tools, and MUST be completed prior to making this work on your files</p>
+<p>This forecast file climo file was made with the <a class="reference external" href="https://github.com/WillyChap/MJOcast/tree/main/MJOcast/Preprocessing_Tools">Preprocessing_Tools</a>., and MUST be completed prior to making this work on your files</p>
 <ol class="arabic simple">
 <li><strong>Install Packages:</strong> :</li>
 </ol>
@@ -227,9 +229,8 @@
 </div>
 <ol class="arabic" start="2">
 <li><p class="first"><strong>Configuration:</strong> Customize your forecasting experience by configuring the toolbox:</p>
-<p>2.1. <em>Manual Configuration:</em> Edit the YAML configuration file directly to define your forecast parameters, data paths, and other settings.</p>
-<p>2.2. <em>YAML Generator Tool:</em> Alternatively, use the provided YAML generator tool in the preprocessor Jupyter Notebook for a user-friendly configuration process.</p>
-<p>2.2 example:</p>
+<p>2.1. <em>Manual Configuration:</em> Edit the YAML configuration file directly to define your forecast parameters, data paths, and other settings. <a class="reference external" href="https://github.com/WillyChap/MJOcast/blob/main/MJOcast/Example/Example_WithYaml.ipynb">Jupyter With-YAML Examples</a>.</p>
+<p>2.2. <em>YAML Generator Tool:</em> Alternatively, use the provided YAML generator tool in the preprocessor Jupyter Notebook for a user-friendly configuration process.  <a class="reference external" href="https://github.com/WillyChap/MJOcast/blob/main/MJOcast/Example/Example_WithoutYaml.ipynb">Jupyter NO-YAML Examples</a>.</p>
 </li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># YAML file specifying output configuration</span>
