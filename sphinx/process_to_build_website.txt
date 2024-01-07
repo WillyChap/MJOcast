@@ -1,5 +1,6 @@
 
 
+conda activate MJOcastDev
 
 ## run this: 
 
@@ -9,3 +10,6 @@ rm -r ./.ipynb_checkpoints/
 make clean
 
 make html
+
+
+Then move the doc files ! 

@@ -112,7 +112,7 @@ class MJOforecaster:
 
         # Check if the user wants to use the forecast-dependent climatology
         if yml_usr_info['use_forecast_climo']:
-            print('Using the forecast dependent climatology. Make sure you have generated it using ./Preprocessing_Scripts/*.ipynb.')
+            print('Using the forecast dependent climatology. Make sure you have generated it using ./Preprocessing_Scripts/Make_LeadTime_Dependent_Climo.ipynb.')
             # Load the forecast climatology dataset
             DS_climo_forecast = xr.open_dataset(self.base_dir+'/Forecast_Climo/Forecast_Climo.nc')
             #TODO add an option to generate/use their own forecast climo...

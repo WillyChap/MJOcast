@@ -287,6 +287,7 @@ This is a descriptions of this website...
    :maxdepth: 4
    :caption: Contents:
    
+   Installing 
    gettingstarted
    WHprimer
    WhyLead
@@ -294,6 +295,7 @@ This is a descriptions of this website...
    JupyterExamples
    summary
    code
+   
 
 Indices and tables
 ==================

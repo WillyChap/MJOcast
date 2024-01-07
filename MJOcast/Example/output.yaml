@@ -1,7 +1,7 @@
 base_dir: /glade/work/wchapman/MJOcast/MJOcast
 user: wchapman
 user_defined_info:
-  forecast_data_loc: /glade/campaign/cgd/amp/wchapman/MJO_S2S_CESM2/p1
+  forecast_data_loc: /glade/campaign/cgd/amp/wchapman/MJO_S2S_CESM2/p1/examples
   forecast_data_name_str: S2Shindcast_cesm2cam6vs_MJOvars_*.nc
   forecast_ensemble_dimension_name: ensemble
   forecast_olr_name: rlut

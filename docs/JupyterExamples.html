@@ -42,6 +42,7 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -96,6 +97,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installing.html">Install Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="WHprimer.html">Wheeler and Hendon Primer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="WhyLead.html">Lead Time Dependent Bias</a></li>
@@ -173,47 +175,187 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jupyter-notebook-examples">
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="jupyter-notebook-examples">
 <h1>Jupyter Notebook Examples<a class="headerlink" href="#jupyter-notebook-examples" title="Permalink to this headline">¶</a></h1>
+<p>Link to Jupyter Notebook Examples: <a class="reference external" href="https://github.com/WillyChap/MJOcast/tree/main/MJOcast/Example">Jupyter Examples</a>.</p>
 <div class="section" id="start-up">
 <h2>Start up<a class="headerlink" href="#start-up" title="Permalink to this headline">¶</a></h2>
-<p>Follow these simple steps to quickly get started:</p>
-<ol class="arabic simple">
-<li><strong>Installation:</strong> Install the toolbox using the provided <em>installation instructions</em> or simply type the following command in your terminal:</li>
+<p>Follow these simple steps to quickly get started in a jupter notebook:</p>
+<ol class="arabic simple" start="0">
+<li>** READ THIS FIRST:** :</li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>MJOcast
+<p>This notebook shows the user how to drive the MJOcast on a single forecast file, and create desired output file.</p>
+<p>In this example, the output file has lead-time dependent bias removed, based on the lead time dependent climo file.</p>
+<p>This forecast file climo file was made with teh Preprocessing_Tools, and MUST be completed prior to making this work on your files</p>
+<ol class="arabic simple">
+<li><strong>Install Packages:</strong> :</li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MJOcast.utils.ProcessForecasts</span> <span class="k">as</span> <span class="nn">ProFo</span>
+<span class="kn">import</span> <span class="nn">MJOcast.utils.ProcessOBS</span> <span class="k">as</span> <span class="nn">ProObs</span>
+<span class="kn">import</span> <span class="nn">MJOcast.utils.WHtools</span> <span class="k">as</span> <span class="nn">WHtools</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">image</span> <span class="k">as</span> <span class="n">mpimg</span>
 </pre></div>
 </div>
 <ol class="arabic" start="2">
 <li><p class="first"><strong>Configuration:</strong> Customize your forecasting experience by configuring the toolbox:</p>
 <p>2.1. <em>Manual Configuration:</em> Edit the YAML configuration file directly to define your forecast parameters, data paths, and other settings.</p>
 <p>2.2. <em>YAML Generator Tool:</em> Alternatively, use the provided YAML generator tool in the preprocessor Jupyter Notebook for a user-friendly configuration process.</p>
-</li>
-<li><p class="first"><strong>Quick Start Usage:</strong> Begin forecasting with ease:</p>
-<p>Import the necessary modules:</p>
+<p>2.2 example:</p>
 </li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MJOcast.utils.ProcessForecasts</span> <span class="k">as</span> <span class="nn">ProFo</span>
-<span class="kn">import</span> <span class="nn">MJOcast.utils.ProcessOBS</span> <span class="k">as</span> <span class="nn">ProObs</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># YAML file specifying output configuration</span>
+<span class="n">output_yaml</span> <span class="o">=</span> <span class="s1">&#39;output.yaml&#39;</span>
+
+<span class="c1"># User information</span>
+<span class="n">user_</span> <span class="o">=</span> <span class="s1">&#39;wchapman&#39;</span>
+
+<span class="c1"># Base directory</span>
+<span class="n">base_dir</span> <span class="o">=</span> <span class="s1">&#39;/glade/work/wchapman/MJOcast/MJOcast&#39;</span>
+
+<span class="c1"># Flag to indicate whether to use ERA5 data</span>
+<span class="n">use_era5</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># Alternative name for user-defined observations (only applicable if user_era5=False)</span>
+<span class="n">usr_named_obs</span> <span class="o">=</span> <span class="s1">&#39;alternative_name_of_obs.nc&#39;</span>
+
+<span class="c1"># Locations for observation and forecast data</span>
+<span class="n">obs_data_loc</span> <span class="o">=</span> <span class="s1">&#39;./Observations/&#39;</span>
+
+<span class="c1"># Locations for observation and forecast data</span>
+<span class="n">forecast_data_loc</span> <span class="o">=</span> <span class="s1">&#39;/glade/campaign/cgd/amp/wchapman/MJO_S2S_CESM2/p1/examples&#39;</span>
+
+<span class="c1"># String pattern for MJO forecast data files</span>
+<span class="n">forecast_data_name_str</span> <span class="o">=</span> <span class="s1">&#39;S2Shindcast_cesm2cam6vs_MJOvars_*.nc&#39;</span>
+
+<span class="c1"># Variable names for forecast data (and name of ensemble dimension)</span>
+<span class="n">forecast_olr_name</span> <span class="o">=</span> <span class="s1">&#39;rlut&#39;</span>
+<span class="n">forecast_u200_name</span> <span class="o">=</span> <span class="s1">&#39;ua_200&#39;</span>
+<span class="n">forecast_u850_name</span> <span class="o">=</span> <span class="s1">&#39;ua_850&#39;</span>
+<span class="n">forecast_ensemble_dimension_name</span> <span class="o">=</span> <span class="s1">&#39;ensemble&#39;</span>
+
+<span class="c1"># Location for diagnostic plots</span>
+<span class="n">output_plot_loc</span> <span class="o">=</span> <span class="s1">&#39;./output_plots/&#39;</span>
+
+<span class="c1"># Location for output files</span>
+<span class="n">output_files_loc</span> <span class="o">=</span> <span class="s1">&#39;/glade/campaign/cgd/amp/wchapman/MJO_S2S_CESM2/RMM_forecast/ERA5/&#39;</span>
+
+<span class="c1"># Naming convention for MJO forecasts</span>
+<span class="n">output_files_string</span> <span class="o">=</span> <span class="s1">&#39;/MJO_Forecast_Init&#39;</span>
+
+<span class="c1"># Flag to indicate whether to use forecast climatology (turn False if you don&#39;t want to remove lead time dependent bias).</span>
+<span class="n">use_forecast_climo</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># Flag to indicate whether to use observed climatology</span>
+<span class="c1"># (always false if &quot;use_forecast_climo=true&quot;)</span>
+<span class="n">use_observed_climo</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Flag to regenerate climatology</span>
+<span class="n">regenerate_climo</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Flag to use Dask for climatology on a single node/machine</span>
+<span class="n">use_dask_for_climo</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># Flag to regenerate climatology (single node/machine)</span>
+<span class="n">regenerate_climo</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1">#create your driver yaml file:</span>
+<span class="n">WHtools</span><span class="o">.</span><span class="n">Create_Driver_Yaml</span><span class="p">(</span><span class="s1">&#39;output.yaml&#39;</span><span class="p">,</span> <span class="n">user_</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span> <span class="n">use_era5</span><span class="p">,</span> <span class="n">usr_named_obs</span><span class="p">,</span> <span class="n">obs_data_loc</span><span class="p">,</span> <span class="n">forecast_data_loc</span><span class="p">,</span> <span class="n">forecast_data_name_str</span><span class="p">,</span>
+           <span class="n">forecast_olr_name</span><span class="p">,</span> <span class="n">forecast_u200_name</span><span class="p">,</span> <span class="n">forecast_u850_name</span><span class="p">,</span> <span class="n">forecast_ensemble_dimension_name</span><span class="p">,</span>
+           <span class="n">output_plot_loc</span><span class="p">,</span> <span class="n">output_files_loc</span><span class="p">,</span> <span class="n">output_files_string</span><span class="p">,</span> <span class="n">use_forecast_climo</span><span class="p">,</span> <span class="n">use_observed_climo</span><span class="p">,</span>
+           <span class="n">regenerate_climo</span><span class="p">,</span> <span class="n">use_dask_for_climo</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Load the YAML configuration file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">yaml_file_path</span> <span class="o">=</span> <span class="s1">&#39;./settings.yaml&#39;</span>
-</pre></div>
-</div>
-<p>Create Observational MJO and EOFs [from either user specified data or provide ERA5]:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MJO_obs</span> <span class="o">=</span> <span class="n">ProObs</span><span class="o">.</span><span class="n">MJOobsProcessor</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="p">)</span>
+<ol class="arabic simple" start="3">
+<li><strong>Run your example and create your processed file: :</strong> Begin forecasting:</li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#initialize the ObsProcessor:</span>
+<span class="n">MJO_obs</span> <span class="o">=</span> <span class="n">ProObs</span><span class="o">.</span><span class="n">MJOobsProcessor</span><span class="p">(</span><span class="n">output_yaml</span><span class="p">)</span>
+
+<span class="c1">#Make the Observed MJO file:</span>
 <span class="n">OBS_DS</span><span class="p">,</span> <span class="n">eof_list</span><span class="p">,</span> <span class="n">pcs</span><span class="p">,</span> <span class="n">MJO_fobs</span><span class="p">,</span> <span class="n">eof_dict</span> <span class="o">=</span> <span class="n">MJO_obs</span><span class="o">.</span><span class="n">make_observed_MJO</span><span class="p">()</span>
+
+<span class="c1">#Plot whatever day you would like for the obs phase space:</span>
+<span class="n">MJO_obs</span><span class="o">.</span><span class="n">plot_phase_space</span><span class="p">(</span><span class="s1">&#39;2001-01-01&#39;</span><span class="p">,</span><span class="mi">60</span><span class="p">)</span>
+
+<span class="c1">#Now initialize the</span>
+<span class="n">MJO_for</span> <span class="o">=</span> <span class="n">ProFo</span><span class="o">.</span><span class="n">MJOforecaster</span><span class="p">(</span><span class="n">output_yaml</span><span class="p">,</span><span class="n">MJO_obs</span><span class="o">.</span><span class="n">eof_dict</span><span class="p">,</span><span class="n">MJO_obs</span><span class="o">.</span><span class="n">MJO_fobs</span><span class="p">)</span>
+
+<span class="c1">#Now create the forecasts</span>
+<span class="n">DS_CESM_for</span><span class="p">,</span><span class="n">OLR_cesm_anom_filterd</span><span class="p">,</span><span class="n">U200_cesm_anom_filterd</span><span class="p">,</span><span class="n">U850_cesm_anom_filterd</span> <span class="o">=</span> <span class="n">MJO_for</span><span class="o">.</span><span class="n">create_forecasts</span><span class="p">(</span><span class="n">num_files</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1">#plot the phase space diagram for your forecast:</span>
+<span class="n">MJO_for</span><span class="o">.</span><span class="n">plot_phase_space</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">Load</span> <span class="n">the</span> <span class="n">YAML</span> <span class="n">configuration</span> <span class="n">file</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>Generate Hindcast .nc Files for each forecast:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MJO_for</span> <span class="o">=</span> <span class="n">ProFo</span><span class="o">.</span><span class="n">MJOforecaster</span><span class="p">(</span><span class="n">yaml_file_path</span><span class="p">,</span> <span class="n">MJO_obs</span><span class="o">.</span><span class="n">eof_dict</span><span class="p">,</span> <span class="n">MJO_obs</span><span class="o">.</span><span class="n">MJO_fobs</span><span class="p">)</span>
-<span class="n">DS_CESM_for</span><span class="p">,</span> <span class="n">OLR_cesm_anom_filtered</span><span class="p">,</span> <span class="n">U200_cesm_anom_filtered</span><span class="p">,</span> <span class="n">U850_cesm_anom_filtered</span> <span class="o">=</span> <span class="n">MJO_for</span><span class="o">.</span><span class="n">create_forecasts</span><span class="p">(</span><span class="n">num_files</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">output</span><span class="p">]:</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">forecast</span> <span class="n">files</span> <span class="n">to</span> <span class="n">process</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">expanding</span> <span class="n">coords</span> <span class="n">to</span> <span class="n">include</span> <span class="n">ensemble</span>
+<span class="n">ensemble</span> <span class="n">dimension</span> <span class="n">length</span><span class="p">:</span> <span class="mi">11</span>
+<span class="n">there</span> <span class="n">are</span> <span class="mi">46</span> <span class="n">forecast</span> <span class="n">lead</span> <span class="n">days</span> <span class="ow">in</span> <span class="n">these</span> <span class="n">files</span>
+<span class="n">Initial</span> <span class="n">look</span> <span class="n">at</span> <span class="n">forecast</span> <span class="n">files</span> <span class="n">passes</span> <span class="n">the</span> <span class="n">first</span> <span class="n">test</span>
+ <span class="o">-----</span> <span class="n">Taking</span> <span class="n">the</span> <span class="n">EOF</span> <span class="o">-----</span>
+<span class="o">...</span><span class="n">done</span> <span class="n">making</span> <span class="n">observed</span> <span class="n">EOFS</span><span class="p">,</span> <span class="n">check</span> <span class="o">./</span><span class="n">output_plots</span><span class="o">/*.</span><span class="n">png</span> <span class="k">for</span> <span class="n">verification</span> <span class="n">metrics</span><span class="o">...</span>
+<span class="o">...</span><span class="n">attaching</span> <span class="n">the</span> <span class="n">BOM</span> <span class="n">index</span> <span class="k">for</span> <span class="n">verification</span><span class="o">...</span>
+<span class="o">...</span><span class="n">saved</span> <span class="n">OLR</span> <span class="n">obs</span> <span class="n">file</span><span class="o">...</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">forecast</span> <span class="n">files</span> <span class="n">to</span> <span class="n">process</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">expanding</span> <span class="n">coords</span> <span class="n">to</span> <span class="n">include</span> <span class="n">ensemble</span>
+<span class="n">ensemble</span> <span class="n">dimension</span> <span class="n">length</span><span class="p">:</span> <span class="mi">11</span>
+<span class="n">there</span> <span class="n">are</span> <span class="mi">46</span> <span class="n">forecast</span> <span class="n">lead</span> <span class="n">days</span> <span class="ow">in</span> <span class="n">these</span> <span class="n">files</span>
+<span class="n">Initial</span> <span class="n">look</span> <span class="n">at</span> <span class="n">forecast</span> <span class="n">files</span> <span class="n">passes</span> <span class="n">the</span> <span class="n">first</span> <span class="n">test</span>
+<span class="n">Using</span> <span class="n">the</span> <span class="n">forecast</span> <span class="n">dependent</span> <span class="n">climatology</span><span class="o">.</span> <span class="n">Make</span> <span class="n">sure</span> <span class="n">you</span> <span class="n">have</span> <span class="n">generated</span> <span class="n">it</span> <span class="n">using</span> <span class="o">./</span><span class="n">Preprocessing_Scripts</span><span class="o">/*.</span><span class="n">ipynb</span><span class="o">.</span>
+<span class="n">reading</span> <span class="n">forecasts</span> <span class="n">file</span><span class="p">:</span> <span class="o">/</span><span class="n">glade</span><span class="o">/</span><span class="n">campaign</span><span class="o">/</span><span class="n">cgd</span><span class="o">/</span><span class="n">amp</span><span class="o">/</span><span class="n">wchapman</span><span class="o">/</span><span class="n">MJO_S2S_CESM2</span><span class="o">/</span><span class="n">p1</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">S2Shindcast_cesm2cam6vs_MJOvars_25jan2018</span><span class="o">.</span><span class="n">nc</span>
+<span class="n">expanding</span> <span class="n">coords</span> <span class="n">to</span> <span class="n">include</span> <span class="n">ensemble</span>
+<span class="n">ensemble</span> <span class="n">dimension</span> <span class="n">length</span><span class="p">:</span> <span class="mi">11</span>
+<span class="n">there</span> <span class="n">are</span> <span class="mi">46</span> <span class="n">forecast</span> <span class="n">lead</span> <span class="n">days</span> <span class="ow">in</span> <span class="n">these</span> <span class="n">files</span>
+<span class="o">----</span> <span class="n">doing</span> <span class="n">anomaly</span> <span class="o">----</span>
+<span class="n">im</span> <span class="n">using</span> <span class="n">the</span> <span class="n">LT</span> <span class="n">dp</span> <span class="n">climo</span>
+<span class="o">----</span> <span class="n">done</span> <span class="n">computing</span> <span class="n">the</span> <span class="n">anomaly</span><span class="o">----</span>
+<span class="o">---</span> <span class="nb">filter</span> <span class="n">out</span> <span class="mi">120</span> <span class="n">days</span> <span class="o">---</span>
+<span class="o">---</span> <span class="n">done</span> <span class="n">filtering</span> <span class="n">out</span> <span class="mi">120</span> <span class="n">days</span> <span class="o">---</span>
+<span class="o">---</span> <span class="n">project</span> <span class="n">the</span> <span class="n">EOFS</span> <span class="o">---</span>
+<span class="n">saved</span><span class="p">:</span>  <span class="o">/</span><span class="n">glade</span><span class="o">/</span><span class="n">campaign</span><span class="o">/</span><span class="n">cgd</span><span class="o">/</span><span class="n">amp</span><span class="o">/</span><span class="n">wchapman</span><span class="o">/</span><span class="n">MJO_S2S_CESM2</span><span class="o">/</span><span class="n">RMM_forecast</span><span class="o">/</span><span class="n">ERA5</span><span class="o">//</span><span class="n">MJO_Forecast_Init_25jan2018</span><span class="o">.</span><span class="n">nc</span>
+<span class="o">---</span> <span class="n">done</span> <span class="n">projecting</span> <span class="n">the</span> <span class="n">EOFS</span> <span class="o">---</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="4">
-<li><strong>Documentation:</strong> For in-depth guidance, explore the code API documentation. It provides detailed usage instructions, function explanations, and examples.</li>
-</ol>
+<p>A created dataset is then saved here:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DSdone</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="s1">&#39;/glade/campaign/cgd/amp/wchapman/MJO_S2S_CESM2/RMM_forecast/ERA5//MJO_Forecast_Init_25jan2018.nc&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output figures are saved here:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;./output_plots/observed_eofs.png&quot;</span>
+</pre></div>
+</div>
+<p>Please visit the provided links at the top of this page to see the running jupyter notebooks!</p>
 <p>Follow these steps to make the most of MJOforecaster in your projects. Happy forecasting!</p>
 </div>
 </div>

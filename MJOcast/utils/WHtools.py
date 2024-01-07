@@ -21,7 +21,7 @@ def func1(arg1,arg2):
     
     arg1 = arg2
     
-def Create_Driver_Yaml(filename, user_, base_dir, use_era5, usr_named_obs, obs_data_loc, forecast_data_loc, forecast_data_name_str, 
+def Create_Driver_Yaml(filename, user, base_dir, use_era5, usr_named_obs, obs_data_loc, forecast_data_loc, forecast_data_name_str, 
                 forecast_olr_name, forecast_u200_name, forecast_u850_name, forecast_ensemble_dimension_name, 
                 output_plot_loc, output_files_loc, output_files_string, use_forecast_climo, use_observed_climo, 
                 regenerate_climo, use_dask_for_climo):
@@ -30,7 +30,7 @@ def Create_Driver_Yaml(filename, user_, base_dir, use_era5, usr_named_obs, obs_d
 
     Parameters:
     filename (str): The name of the YAML file to be generated.
-    user_ (str): The user name.
+    user (str): your username.
     base_dir (str): The base directory.
     use_era5 (bool): Whether to use ERA5 data.
     usr_named_obs (str): Alternative name for observations file.
@@ -50,7 +50,7 @@ def Create_Driver_Yaml(filename, user_, base_dir, use_era5, usr_named_obs, obs_d
     use_dask_for_climo (bool): Whether to use Dask for climatology processing.
     """
     Total_yaml = {
-        'user': user_,
+        'user': user,
         'base_dir': base_dir,
         'user_defined_info': {
             'use_era5': use_era5,
@@ -75,12 +75,6 @@ def Create_Driver_Yaml(filename, user_, base_dir, use_era5, usr_named_obs, obs_d
 
     with open(filename, 'w') as yaml_file:
         yaml.dump(Total_yaml, yaml_file, default_flow_style=False)
-
-# Call the function with the desired variable values and filename
-#Create_Yaml('output.yaml', user_, base_dir, use_era5, usr_named_obs, obs_data_loc, forecast_data_loc, forecast_data_name_str, 
-#            forecast_olr_name, forecast_u200_name, forecast_u850_name, forecast_ensemble_dimension_name, 
-#            output_plot_loc, output_files_loc, output_files_string, use_forecast_climo, use_observed_climo, 
-#            regenerate_climo, use_dask_for_climo)
 
 
 def flip_lat_if_necessary(data):
