@@ -71,29 +71,31 @@ def create_For_file_case2():
     return all_pass
 
 def corr_rmm1_rmm2(MJO_for):
+    """
+    Verify forecast RMM1/RMM2 match the reference in shape AND magnitude.
+
+    A correlation > 0.7 alone is scale-invariant and would miss a scaling error, so we
+    tighten the correlation (catches sign/structure) and check the standard-deviation
+    ratio (catches scaling). Absolute values are not pinned because the EOF solve differs
+    slightly across environments (~0.3 in RMM units).
+    """
     fp = './tests/test_cases/MJO_Forecast_Init_standard.nc'
-    check_corr_ds = xr.open_dataset(fp) 
-    
+    check_corr_ds = xr.open_dataset(fp)
+
     check_modes = ['RMM1', 'RMM2']
-    corr_dict={}
-    
-    if len(MJO_for.MJO_forecast_DS.number)>1:
-        for cm in check_modes:
-            crr = np.corrcoef(check_corr_ds[cm].sel(number=1).isel(time=slice(0,12)).values, MJO_for.MJO_forecast_DS[cm].sel(number=1).isel(time=slice(0,12)))[0,1]
-            corr_dict[cm]=crr
-    else:
-        for cm in check_modes:
-            crr = np.corrcoef(check_corr_ds[cm].sel(number=1).isel(time=slice(0,12)).values.squeeze(), MJO_for.MJO_forecast_DS[cm].isel(time=slice(0,12)).squeeze())[0,1]
-            corr_dict[cm]=crr
-            
+
     for cm in check_modes:
-        
-        if corr_dict[cm] > 0.7:
-            all_pass=True
+        ref = check_corr_ds[cm].sel(number=1).isel(time=slice(0,12)).values.squeeze()
+        if len(MJO_for.MJO_forecast_DS.number) > 1:
+            got = MJO_for.MJO_forecast_DS[cm].sel(number=1).isel(time=slice(0,12)).values.squeeze()
         else:
-            all_pass=False
-            break
-    return all_pass
+            got = MJO_for.MJO_forecast_DS[cm].isel(time=slice(0,12)).values.squeeze()
+        corr = np.corrcoef(ref, got)[0, 1]
+        std_ratio = np.std(got) / np.std(ref)
+        assert corr > 0.9, f"{cm}: correlation {corr:.3f} <= 0.9 (sign/structure error)"
+        assert 0.75 < std_ratio < 1.3, f"{cm}: std ratio {std_ratio:.3f} (scaling error)"
+
+    return True
 
 def eof1_u200_matches_obs():
     """Regression check: the saved forecast eof1_u200 must be EOF1 (not a copy of eof2_u200)."""
@@ -122,6 +124,42 @@ def eof1_u200_matches_obs():
 def test_eof1_u200_matches_obs():
     '''eof1_u200 in the forecast output must be EOF1, not a duplicate of eof2_u200'''
     assert eof1_u200_matches_obs() == True
+
+
+def test_anomaly_era5_crosses_jan1():
+    '''anomaly_ERA5 must subtract the climatology at each forecast day-of-year, including
+    across the Dec->Jan boundary (leap-year doy 366 -> 1), with no off-by-one.'''
+    import pandas as pd
+    yaml_file_path = './tests/settings.yaml'
+    MJO_obs = ProObs.MJOobsProcessor(yaml_file_path)
+    MJO_obs.make_observed_MJO()
+    MJO_for = ProFo.MJOforecaster(yaml_file_path, MJO_obs.eof_dict, MJO_obs.MJO_fobs)
+
+    clim = xr.open_dataset('./MJOcast/Observations/ERA5_climo.nc')
+    lon = clim['lon'].values
+    times = pd.date_range('2008-12-28', periods=10, freq='D')  # crosses Jan 1 of a leap year
+    ens = np.arange(3)
+    base = np.ones((len(ens), len(times), len(lon)))
+    ds = xr.Dataset(
+        {'rlut':   (['ensemble', 'time', 'lon'], base * 1.0),
+         'ua_200': (['ensemble', 'time', 'lon'], base * 2.0),
+         'ua_850': (['ensemble', 'time', 'lon'], base * 3.0)},
+        coords={'ensemble': ens, 'time': times, 'lon': lon})
+
+    U850a, U200a, OLRa = MJO_for.anomaly_ERA5(MJO_for.yml_data, ds, None, len(times))
+
+    doy = ds['time.dayofyear'].values
+    assert list(doy) == [363, 364, 365, 366, 1, 2, 3, 4, 5, 6]  # the Dec->Jan seam, incl. leap day 366
+
+    doy_da = xr.DataArray(doy, dims='time')
+    exp_olr = clim['olr'].sel(dayofyear=doy_da).values
+    exp_u200 = clim['uwnd200'].sel(dayofyear=doy_da).values
+    exp_u850 = clim['uwnd850'].sel(dayofyear=doy_da).values
+
+    # forecast fields are constant (1/2/3), so anomaly == value - climatology_at_that_doy
+    assert np.allclose(OLRa.sel(ensemble=0).values, 1.0 - exp_olr)
+    assert np.allclose(U200a.sel(ensemble=0).values, 2.0 - exp_u200)
+    assert np.allclose(U850a.sel(ensemble=0).values, 3.0 - exp_u850)
 
 
 def test_default_creation_case1():

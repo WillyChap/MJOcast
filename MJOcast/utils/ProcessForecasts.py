@@ -217,54 +217,26 @@ class MJOforecaster:
 
         #get the day of year of the forecasts
         fordoy = np.array(DS_CESM_for['time.dayofyear'])
+        fordoy_da = xr.DataArray(fordoy, dims='time')
 
-        if fordoy[-1]>fordoy[0]:
-            ### OLR ####
-            OLRxr = DS_CESM_for[olrvSTR]
-            OLR_cesm_anom = xr.zeros_like(DS_CESM_for[olrvSTR])
-            temp_clim_olr = np.expand_dims(np.array(OLR_clim.sel(dayofyear=slice(fordoy[0],fordoy[-1]))['olr']),0)
-            OLR_cesm_anom[:,:,:] = np.array(OLRxr)-temp_clim_olr
+        # Select the climatology at each forecast day's day-of-year. Indexing by the actual
+        # day-of-year handles the Jan-1 wrap (...,365,366,1,2,...) directly and correctly for
+        # leap years; the previous slice/concat dropped day 366 and selected one extra day
+        # across the boundary.
+        OLRxr = DS_CESM_for[olrvSTR]
+        OLR_cesm_anom = xr.zeros_like(OLRxr)
+        temp_clim_olr = np.expand_dims(np.array(OLR_clim['olr'].sel(dayofyear=fordoy_da)),0)
+        OLR_cesm_anom[:,:,:] = np.array(OLRxr)-temp_clim_olr
 
-            ### u200 winds ####
-            U200_cesm = DS_CESM_for[u200vSTR]
-            U200_cesm_anom = xr.zeros_like(U200_cesm)
-            temp_clim_u200 = np.expand_dims(np.array(U200_clim.sel(dayofyear=slice(fordoy[0],fordoy[-1]))['uwnd200']),0)
-            U200_cesm_anom[:,:,:] = np.array(U200_cesm)-temp_clim_u200
+        U200_cesm = DS_CESM_for[u200vSTR]
+        U200_cesm_anom = xr.zeros_like(U200_cesm)
+        temp_clim_u200 = np.expand_dims(np.array(U200_clim['uwnd200'].sel(dayofyear=fordoy_da)),0)
+        U200_cesm_anom[:,:,:] = np.array(U200_cesm)-temp_clim_u200
 
-            ### u850 winds ####
-            U850_cesm = DS_CESM_for[u850vSTR]
-            U850_cesm_anom = xr.zeros_like(U850_cesm)
-            temp_clim_u850 = np.expand_dims(np.array(U850_clim.sel(dayofyear=slice(fordoy[0],fordoy[-1]))['uwnd850']),0)
-            U850_cesm_anom[:,:,:] = np.array(U850_cesm)-temp_clim_u850
-
-        else:
-            print('...we crossed Jan 1...')
-            ### OLR ####
-            OLRxr = DS_CESM_for[olrvSTR]
-            OLR_cesm_anom = xr.zeros_like(DS_CESM_for[olrvSTR])
-            temp_clim_olr = np.concatenate([np.array(OLR_clim.sel(dayofyear=slice(fordoy[0],365))['olr']),np.array(OLR_clim.sel(dayofyear=slice(1,fordoy[-1]+1))['olr'])],axis=0)
-            temp_clim_olr = np.expand_dims(temp_clim_olr,0)
-            if temp_clim_olr.shape[1]==numdays_out + 1:
-                temp_clim_olr = temp_clim_olr[:,:numdays_out,:,:]
-            OLR_cesm_anom[:,:,:] = np.array(OLRxr)-temp_clim_olr
-
-            ### u200 winds ####
-            U200_cesm = DS_CESM_for[u200vSTR]
-            U200_cesm_anom = xr.zeros_like(U200_cesm)
-            temp_clim_u200 = np.concatenate([np.array(U200_clim.sel(dayofyear=slice(fordoy[0],365))['uwnd200']),np.array(U200_clim.sel(dayofyear=slice(1,fordoy[-1]+1))['uwnd200'])],axis=0)
-            temp_clim_u200 = np.expand_dims(temp_clim_u200,0)
-            if temp_clim_u200.shape[1]==numdays_out + 1:
-                temp_clim_u200 = temp_clim_u200[:,:numdays_out,:,:]
-            U200_cesm_anom[:,:,:] = np.array(U200_cesm)-temp_clim_u200
-
-            ### u850 winds ####
-            U850_cesm = DS_CESM_for[u850vSTR]
-            U850_cesm_anom = xr.zeros_like(U850_cesm)
-            temp_clim_u850 = np.concatenate([np.array(U850_clim.sel(dayofyear=slice(fordoy[0],365))['uwnd850']),np.array(U850_clim.sel(dayofyear=slice(1,fordoy[-1]+1))['uwnd850'])],axis=0)
-            temp_clim_u850 = np.expand_dims(temp_clim_u850,0)
-            if temp_clim_u850.shape[1]==numdays_out + 1:
-                temp_clim_u850 = temp_clim_u850[:,:numdays_out,:,:]
-            U850_cesm_anom[:,:,:] = np.array(U850_cesm)-temp_clim_u850
+        U850_cesm = DS_CESM_for[u850vSTR]
+        U850_cesm_anom = xr.zeros_like(U850_cesm)
+        temp_clim_u850 = np.expand_dims(np.array(U850_clim['uwnd850'].sel(dayofyear=fordoy_da)),0)
+        U850_cesm_anom[:,:,:] = np.array(U850_cesm)-temp_clim_u850
 
         return U850_cesm_anom, U200_cesm_anom, OLR_cesm_anom
 
@@ -312,26 +284,40 @@ class MJOforecaster:
         U200_anom = Obsanom['uwnd200'].to_dataset().rename({'uwnd200':yml_usr_info['forecast_u200_name']})
         U850_anom = Obsanom['uwnd850'].to_dataset().rename({'uwnd850':yml_usr_info['forecast_u850_name']})
 
+        # The WH filter subtracts a strict 120-day running mean. ~120 days of observed
+        # anomaly are prepended (first_date_120..first_date) so every forecast lead has a
+        # full window. min_periods=120 enforces that: if the observed history is short or
+        # gappy the running mean is NaN (and the affected RMM values become NaN) rather than
+        # silently using a shorter, biased window. Fail loud here if the observed anomaly
+        # record does not cover those 120 days (e.g. it ends before the forecast init date).
+        n_hist = OLR_anom.sel(time=slice(first_date_120, first_date)).sizes['time']
+        if n_hist < AvgdayN:
+            raise RuntimeError(
+                f"ERA5_Meridional_Mean_Anomaly.nc covers only {n_hist} of the {AvgdayN} days "
+                f"required before the forecast init ({str(U850_cesm_anom.time.values[0])[:10]}). "
+                f"Update the observed anomaly file to span the 120 days before each init "
+                f"(see Preprocessing_Tools/Make_Obs.ipynb).")
+
         for enen in range(nensembs):
             ### OLR anomaly filtering:
             tmpREolr=OLR_anom.sel(time=slice(first_date_120,first_date))
             tmpREolr=tmpREolr.drop_vars('dayofyear')
             fused_RE_for_OLR = xr.concat([tmpREolr,OLR_cesm_anom.sel(ensemble=enen).to_dataset()],dim='time')
-            fused_RE_for_OLR_rolled = fused_RE_for_OLR.rolling(time=120, center=False,min_periods=1).mean().sel(time=slice(OLR_cesm_anom.time.values[0],OLR_cesm_anom.time.values[-1]))
+            fused_RE_for_OLR_rolled = fused_RE_for_OLR.rolling(time=120, center=False,min_periods=120).mean().sel(time=slice(OLR_cesm_anom.time.values[0],OLR_cesm_anom.time.values[-1]))
             OLR_cesm_anom_filterd[enen,:,:]=OLR_cesm_anom.sel(ensemble=enen).values - fused_RE_for_OLR_rolled[olrv].values
 
             ### U200 anomaly filtering:
             tmpRE200=U200_anom.sel(time=slice(first_date_120,first_date))
             tmpRE200=tmpRE200.drop_vars('dayofyear')
             fused_RE_for_200 = xr.concat([tmpRE200,U200_cesm_anom.sel(ensemble=enen).to_dataset()],dim='time')
-            fused_RE_for_200_rolled = fused_RE_for_200.rolling(time=120, center=False,min_periods=1).mean().sel(time=slice(U200_cesm_anom.time.values[0],U200_cesm_anom.time.values[-1]))
+            fused_RE_for_200_rolled = fused_RE_for_200.rolling(time=120, center=False,min_periods=120).mean().sel(time=slice(U200_cesm_anom.time.values[0],U200_cesm_anom.time.values[-1]))
             U200_cesm_anom_filterd[enen,:,:]=U200_cesm_anom.sel(ensemble=enen).values - fused_RE_for_200_rolled[u200v].values
 
             ### U850 anomaly filtering:
             tmpRE850=U850_anom.sel(time=slice(first_date_120,first_date))
             tmpRE850=tmpRE850.drop_vars('dayofyear')
             fused_RE_for_850 = xr.concat([tmpRE850,U850_cesm_anom.sel(ensemble=enen).to_dataset()],dim='time')
-            fused_RE_for_850_rolled = fused_RE_for_850.rolling(time=120, center=False,min_periods=1).mean().sel(time=slice(U850_cesm_anom.time.values[0],U850_cesm_anom.time.values[-1]))
+            fused_RE_for_850_rolled = fused_RE_for_850.rolling(time=120, center=False,min_periods=120).mean().sel(time=slice(U850_cesm_anom.time.values[0],U850_cesm_anom.time.values[-1]))
             U850_cesm_anom_filterd[enen,:,:]=U850_cesm_anom.sel(ensemble=enen).values - fused_RE_for_850_rolled[u850v].values
 
         return OLR_cesm_anom_filterd,U200_cesm_anom_filterd,U850_cesm_anom_filterd

@@ -75,36 +75,43 @@ or
  
 Getting started / examples
 --------------------------
-*Note for experienced users: We have slightly changed the API for the EOF calculation with version 1.4. to be more flexible 
-for changes in the future. Please read the API docs or compare your code with the current example. The old API is still
-working but will deprecate with one of the next releases. Adapting to the new interface will only take a few minutes.*
+MJOcast is driven by a YAML configuration file (see the `settings.yaml` examples in the source) and
+has two stages. The forecast stage consumes the output of the observation stage:
 
-There are three basic entry points, of which you should read the documentation:
+```python
+import MJOcast.utils.ProcessOBS as ProObs
+import MJOcast.utils.ProcessForecasts as ProFo
 
-* Calculation of the EOFs: [calc_eofs_from_olr](https://willychap.github.io/MJOcast/api/omi_calculator.html#MJOcast.omi.omi_calculator.calc_eofs_from_olr).
-* Calculation of the PCs: [calculate_pcs_from_olr](https://willychap.github.io/MJOcast/api/omi_calculator.html#MJOcast.omi.omi_calculator.calculate_pcs_from_olr).
-* An OLR data container class, which has to be provided for the calculations: [OLRData](https://willychap.github.io/MJOcast/api/olr_handling.html#MJOcast.olr_handling.OLRData)
+# 1) Build the observed RMM EOFs/PCs (from ERA5 or your own obs file).
+#    Writes MJO_obs_created.nc and verification plots into the configured output dirs.
+MJO_obs = ProObs.MJOobsProcessor('settings.yaml')
+OBS_DS, eof_list, pcs, MJO_fobs, eof_dict = MJO_obs.make_observed_MJO()
 
-After you have installed MJOcast, you can download an
-[example](https://github.com/willychap/MJOcast/tree/master/examples/) from the source, which consists of two files: 
+# 2) Project your forecast ensembles onto the observed EOFs to get RMM1/RMM2.
+#    Writes one MJO forecast netCDF per initialization date.
+MJO_for = ProFo.MJOforecaster('settings.yaml', MJO_obs.eof_dict, MJO_obs.MJO_fobs)
+MJO_for.create_forecasts()
+```
 
-* recalculate_original_omi.py: After downloading some data files, which are mentioned and linked in the source
-  documentation of the example, you can run this example to recalculate the original OMI values. The script will save
-  the computed Empirical Orthogonal Functions (EOFs) and the Principal Components (PCs) in two individual files, which
-  can also be configured in the source code. In addition, it will save a few plots into a directory, which can
-  also be configured in the source. These plots show the agreement with the original OMI values (slight deviations are 
-  expected due to numerical differences. This is explained in detail in the corresponding software meta paper).
+The main entry points are:
 
-  Note that you can use this example also as a template to calculate OMI values with your own OLR data. 
-  In order to do that, you only have to adapt two parts of the code, which are also marked in the code documentation.
+* `MJOcast.utils.ProcessOBS.MJOobsProcessor` and its `make_observed_MJO()` method — compute the
+  observed multivariate EOFs and RMM indices. If the auto-derived EOF orientation does not correlate
+  well with ERA5, pass a `scaling_dict` (`loc1`, `loc2`, `scale1`, `scale2`) to override it.
+* `MJOcast.utils.ProcessForecasts.MJOforecaster` and its `create_forecasts()` method — compute
+  lead-time anomalies, apply the 120-day filter, and project each ensemble member onto the observed
+  EOFs.
 
-  Note also that this script may run for one or two hours on common personal computer systems.
+**Note:** the 120-day filter requires the observed anomaly file
+(`Observations/ERA5_Meridional_Mean_Anomaly.nc`) to cover the 120 days *before* each forecast
+initialization date. If it does not (e.g. the bundled file ends before your init), `create_forecasts`
+raises a clear error — regenerate/extend the file with `Preprocessing_Tools/Make_Obs.ipynb`.
 
-* evaluate_omi_reproduction.py: This script produces more detailed comparison plots and saves them into a directory.
-  The script recalculate_original_omi.py has to be run first, since the evaluation script is based on the saved results.
-  As for recalculate_original_omi.py, some file and directory names have to be adapted in the beginning of the code.
-
-Both files are also available as Jupyter notebook files.
+The YAML file controls everything else: observation source (`use_era5`), the forecast variable names
+as they appear in your netCDF files (`forecast_olr_name`, `forecast_u200_name`, `forecast_u850_name`),
+the ensemble dimension name, the climatology mode, and all input/output paths. Runnable notebooks are
+provided in `MJOcast/Example/` (with and without a pre-built YAML), and helper notebooks for preparing
+inputs are in `MJOcast/Preprocessing_Tools/`.
 
 
 Automated testing
