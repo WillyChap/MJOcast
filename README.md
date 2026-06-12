@@ -102,6 +102,11 @@ The main entry points are:
   lead-time anomalies, apply the 120-day filter, and project each ensemble member onto the observed
   EOFs.
 
+**Note:** the 120-day filter requires the observed anomaly file
+(`Observations/ERA5_Meridional_Mean_Anomaly.nc`) to cover the 120 days *before* each forecast
+initialization date. If it does not (e.g. the bundled file ends before your init), `create_forecasts`
+raises a clear error — regenerate/extend the file with `Preprocessing_Tools/Make_Obs.ipynb`.
+
 The YAML file controls everything else: observation source (`use_era5`), the forecast variable names
 as they appear in your netCDF files (`forecast_olr_name`, `forecast_u200_name`, `forecast_u850_name`),
 the ensemble dimension name, the climatology mode, and all input/output paths. Runnable notebooks are
