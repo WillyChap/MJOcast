@@ -71,29 +71,31 @@ def create_For_file_case2():
     return all_pass
 
 def corr_rmm1_rmm2(MJO_for):
+    """
+    Verify forecast RMM1/RMM2 match the reference in shape AND magnitude.
+
+    A correlation > 0.7 alone is scale-invariant and would miss a scaling error, so we
+    tighten the correlation (catches sign/structure) and check the standard-deviation
+    ratio (catches scaling). Absolute values are not pinned because the EOF solve differs
+    slightly across environments (~0.3 in RMM units).
+    """
     fp = './tests/test_cases/MJO_Forecast_Init_standard.nc'
-    check_corr_ds = xr.open_dataset(fp) 
-    
+    check_corr_ds = xr.open_dataset(fp)
+
     check_modes = ['RMM1', 'RMM2']
-    corr_dict={}
-    
-    if len(MJO_for.MJO_forecast_DS.number)>1:
-        for cm in check_modes:
-            crr = np.corrcoef(check_corr_ds[cm].sel(number=1).isel(time=slice(0,12)).values, MJO_for.MJO_forecast_DS[cm].sel(number=1).isel(time=slice(0,12)))[0,1]
-            corr_dict[cm]=crr
-    else:
-        for cm in check_modes:
-            crr = np.corrcoef(check_corr_ds[cm].sel(number=1).isel(time=slice(0,12)).values.squeeze(), MJO_for.MJO_forecast_DS[cm].isel(time=slice(0,12)).squeeze())[0,1]
-            corr_dict[cm]=crr
-            
+
     for cm in check_modes:
-        
-        if corr_dict[cm] > 0.7:
-            all_pass=True
+        ref = check_corr_ds[cm].sel(number=1).isel(time=slice(0,12)).values.squeeze()
+        if len(MJO_for.MJO_forecast_DS.number) > 1:
+            got = MJO_for.MJO_forecast_DS[cm].sel(number=1).isel(time=slice(0,12)).values.squeeze()
         else:
-            all_pass=False
-            break
-    return all_pass
+            got = MJO_for.MJO_forecast_DS[cm].isel(time=slice(0,12)).values.squeeze()
+        corr = np.corrcoef(ref, got)[0, 1]
+        std_ratio = np.std(got) / np.std(ref)
+        assert corr > 0.9, f"{cm}: correlation {corr:.3f} <= 0.9 (sign/structure error)"
+        assert 0.75 < std_ratio < 1.3, f"{cm}: std ratio {std_ratio:.3f} (scaling error)"
+
+    return True
 
 def eof1_u200_matches_obs():
     """Regression check: the saved forecast eof1_u200 must be EOF1 (not a copy of eof2_u200)."""

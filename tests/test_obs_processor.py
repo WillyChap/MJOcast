@@ -25,38 +25,33 @@ def create_MJOobs_file():
 
 def check_obs_eofs(MJO_obs):
     """
-    Checks the correlation between observed dataset EOF values and ERA5 EOF values for specific modes.
+    Verify each observed EOF mode matches the ERA5 reference in shape AND magnitude.
 
-    This function opens an observed dataset file, interpolates the data, and calculates the correlation coefficients
-    between specific EOF modes of the observed dataset and corresponding ERA5 EOF values. It compares the calculated
-    correlations to a predefined threshold and raises an assertion error if any correlation is below the threshold.
+    A bare correlation > 0.7 would pass even with a sign flip masked by structure, or a
+    2x scaling error (correlation is scale-invariant). So in addition to a much tighter
+    correlation we check the standard-deviation ratio (catches scaling) and the absolute
+    values within a tolerance that still accommodates EOF-solver/LAPACK differences
+    across environments (measured ~1e-2 on values spanning ~0.13).
 
     Returns:
-        bool: True if all correlations are above the threshold, indicating a high correlation between observed and ERA5 EOF values.
+        bool: True if every mode passes; raises AssertionError naming the failing mode otherwise.
     """
     fp = './tests/test_cases/eofs_MJO.nc'
     check_corr_ds = xr.open_dataset(fp)
     check_corr_ds = whtools.interpolate_obs(check_corr_ds, MJO_obs.forecast_lons)
-    corr_dict = {}
 
     check_modes = ['eof1_olr', 'eof2_olr', 'eof1_u200', 'eof2_u200', 'eof1_u850', 'eof2_u850']
 
     for cm in check_modes:
-        corrnum = np.corrcoef(check_corr_ds[cm].values, MJO_obs.MJO_fobs[cm])[0, 1]
-        corr_dict[cm] = corrnum
+        ref = check_corr_ds[cm].values
+        got = np.array(MJO_obs.MJO_fobs[cm])
+        corr = np.corrcoef(ref, got)[0, 1]
+        std_ratio = np.std(got) / np.std(ref)
+        assert corr > 0.95, f"{cm}: correlation {corr:.3f} <= 0.95 (sign/structure error)"
+        assert 0.85 < std_ratio < 1.18, f"{cm}: std ratio {std_ratio:.3f} (scaling error)"
+        assert np.allclose(got, ref, atol=0.03), f"{cm}: values differ from reference beyond 0.03"
 
-    print('the correlation of the observed dataset EOF values and the ERA5 EOF values is:')
-    print(corr_dict)
-
-    for cm in check_modes:
-        
-        if corr_dict[cm] > 0.7:
-            all_pass=True
-        else:
-            all_pass=False
-            break
-
-    return all_pass ==True
+    return True
 
 def test_default_creation():
     '''Returns a MJO_obs instance'''
