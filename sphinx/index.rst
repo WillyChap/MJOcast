@@ -40,7 +40,7 @@ When the MJOcast toolbox is run an individual MJO RMM forecast file will be crea
             "eof2_olr":(["longitude"],np.array(self.MJO_fobs['eof2_olr'])),
             "eof1_u850":(["longitude"],np.array(self.MJO_fobs['eof1_u850'])),
             "eof2_u850":(["longitude"],np.array(self.MJO_fobs['eof2_u850'])),
-            "eof1_u200":(["longitude"],np.array(self.MJO_fobs['eof2_u200'])),
+            "eof1_u200":(["longitude"],np.array(self.MJO_fobs['eof1_u200'])),
             "eof2_u200":(["longitude"],np.array(self.MJO_fobs['eof2_u200'])),
             "u200_norm":(["time","number","longitude"],sv_u200), 
             "u850_norm":(["time","number","longitude"],sv_u850),
