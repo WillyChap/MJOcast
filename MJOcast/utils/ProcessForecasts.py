@@ -312,26 +312,31 @@ class MJOforecaster:
         U200_anom = Obsanom['uwnd200'].to_dataset().rename({'uwnd200':yml_usr_info['forecast_u200_name']})
         U850_anom = Obsanom['uwnd850'].to_dataset().rename({'uwnd850':yml_usr_info['forecast_u850_name']})
 
+        # The WH filter subtracts a strict 120-day running mean. ~120 days of observed
+        # anomaly are prepended (first_date_120..first_date) so every forecast lead has a
+        # full window. min_periods=120 enforces that: if the observed history is short or
+        # gappy the running mean is NaN (and the affected RMM values become NaN) rather than
+        # silently using a shorter, biased window.
         for enen in range(nensembs):
             ### OLR anomaly filtering:
             tmpREolr=OLR_anom.sel(time=slice(first_date_120,first_date))
             tmpREolr=tmpREolr.drop_vars('dayofyear')
             fused_RE_for_OLR = xr.concat([tmpREolr,OLR_cesm_anom.sel(ensemble=enen).to_dataset()],dim='time')
-            fused_RE_for_OLR_rolled = fused_RE_for_OLR.rolling(time=120, center=False,min_periods=1).mean().sel(time=slice(OLR_cesm_anom.time.values[0],OLR_cesm_anom.time.values[-1]))
+            fused_RE_for_OLR_rolled = fused_RE_for_OLR.rolling(time=120, center=False,min_periods=120).mean().sel(time=slice(OLR_cesm_anom.time.values[0],OLR_cesm_anom.time.values[-1]))
             OLR_cesm_anom_filterd[enen,:,:]=OLR_cesm_anom.sel(ensemble=enen).values - fused_RE_for_OLR_rolled[olrv].values
 
             ### U200 anomaly filtering:
             tmpRE200=U200_anom.sel(time=slice(first_date_120,first_date))
             tmpRE200=tmpRE200.drop_vars('dayofyear')
             fused_RE_for_200 = xr.concat([tmpRE200,U200_cesm_anom.sel(ensemble=enen).to_dataset()],dim='time')
-            fused_RE_for_200_rolled = fused_RE_for_200.rolling(time=120, center=False,min_periods=1).mean().sel(time=slice(U200_cesm_anom.time.values[0],U200_cesm_anom.time.values[-1]))
+            fused_RE_for_200_rolled = fused_RE_for_200.rolling(time=120, center=False,min_periods=120).mean().sel(time=slice(U200_cesm_anom.time.values[0],U200_cesm_anom.time.values[-1]))
             U200_cesm_anom_filterd[enen,:,:]=U200_cesm_anom.sel(ensemble=enen).values - fused_RE_for_200_rolled[u200v].values
 
             ### U850 anomaly filtering:
             tmpRE850=U850_anom.sel(time=slice(first_date_120,first_date))
             tmpRE850=tmpRE850.drop_vars('dayofyear')
             fused_RE_for_850 = xr.concat([tmpRE850,U850_cesm_anom.sel(ensemble=enen).to_dataset()],dim='time')
-            fused_RE_for_850_rolled = fused_RE_for_850.rolling(time=120, center=False,min_periods=1).mean().sel(time=slice(U850_cesm_anom.time.values[0],U850_cesm_anom.time.values[-1]))
+            fused_RE_for_850_rolled = fused_RE_for_850.rolling(time=120, center=False,min_periods=120).mean().sel(time=slice(U850_cesm_anom.time.values[0],U850_cesm_anom.time.values[-1]))
             U850_cesm_anom_filterd[enen,:,:]=U850_cesm_anom.sel(ensemble=enen).values - fused_RE_for_850_rolled[u850v].values
 
         return OLR_cesm_anom_filterd,U200_cesm_anom_filterd,U850_cesm_anom_filterd
