@@ -95,6 +95,35 @@ def corr_rmm1_rmm2(MJO_for):
             break
     return all_pass
 
+def eof1_u200_matches_obs():
+    """Regression check: the saved forecast eof1_u200 must be EOF1 (not a copy of eof2_u200)."""
+    yaml_file_path = './tests/settings.yaml'
+    MJO_obs = ProObs.MJOobsProcessor(yaml_file_path)
+    MJO_obs.make_observed_MJO()
+    MJO_for = ProFo.MJOforecaster(yaml_file_path, MJO_obs.eof_dict, MJO_obs.MJO_fobs)
+
+    for sv in glob.glob('./tests//MJO_Forecast_Init_Case*.nc'):
+        if os.path.exists(sv):
+            os.remove(sv)
+
+    MJO_for.create_forecasts()
+    ds = MJO_for.MJO_forecast_DS
+
+    distinct = not np.array_equal(ds['eof1_u200'].values, ds['eof2_u200'].values)
+    matches_obs = np.array_equal(ds['eof1_u200'].values, np.array(MJO_obs.MJO_fobs['eof1_u200']))
+
+    for sv in glob.glob('./tests//MJO_Forecast_Init_Case*.nc'):
+        if os.path.exists(sv):
+            os.remove(sv)
+
+    return distinct and matches_obs
+
+
+def test_eof1_u200_matches_obs():
+    '''eof1_u200 in the forecast output must be EOF1, not a duplicate of eof2_u200'''
+    assert eof1_u200_matches_obs() == True
+
+
 def test_default_creation_case1():
     '''Returns a MJO_obs instance'''
     all_pass = create_For_file_case1()

@@ -42,7 +42,7 @@ def make_DF_ense(files):
     for ee, File in enumerate(DF['File']):
         # Extract the initialization date from the file name using the provided function
         inst, matches = convert_dates_to_string(File)
-        DF['Init'][ee] = matches[0]
+        DF.loc[ee, 'Init'] = matches[0]
 
     return DF
 
@@ -482,7 +482,7 @@ class MJOforecaster:
             "eof2_olr":(["longitude"],np.array(self.MJO_fobs['eof2_olr'])),
             "eof1_u850":(["longitude"],np.array(self.MJO_fobs['eof1_u850'])),
             "eof2_u850":(["longitude"],np.array(self.MJO_fobs['eof2_u850'])),
-            "eof1_u200":(["longitude"],np.array(self.MJO_fobs['eof2_u200'])),
+            "eof1_u200":(["longitude"],np.array(self.MJO_fobs['eof1_u200'])),
             "eof2_u200":(["longitude"],np.array(self.MJO_fobs['eof2_u200'])),
             "u200_norm":(["time","number","longitude"],sv_u200), 
             "u850_norm":(["time","number","longitude"],sv_u850),
@@ -711,8 +711,8 @@ class MJOforecaster:
                     U850_cesm_anom,U200_cesm_anom,OLR_cesm_anom = self.anomaly_LTD(self.yml_data,DS_CESM_for,DS_climo_forecast,numdays_out)
                 else: 
                     U850_cesm_anom,U200_cesm_anom,OLR_cesm_anom = self.anomaly_ERA5(self.yml_data,DS_CESM_for,DS_climo_forecast,numdays_out)
-            except:
-                raise RuntimeError("error happened while computing forecast runtime anomaly.. check the get_forecast_anom() function")
+            except Exception as e:
+                raise RuntimeError("error happened while computing forecast runtime anomaly.. check the anomaly_LTD()/anomaly_ERA5() function") from e
             print('---- done computing the anomaly----')
 
 
@@ -725,8 +725,8 @@ class MJOforecaster:
                                                                                                     OLR_cesm_anom,DS_climo_forecast,
                                                                                                     numdays_out,AvgdayN,nensembs)
                 #function to run the anomaly... get_forecast_anom(yml_data,DS_CESM_for,DS_climo_forecast,MJO_for_obs)
-            except:
-                raise RuntimeError("error happened while computing filtering out the previous days.. check the filter_previous_days() function")
+            except Exception as e:
+                raise RuntimeError("error happened while filtering out the previous days.. check the filt_ndays() function") from e
             print('--- done filtering out 120 days ---')
 
 
@@ -740,8 +740,8 @@ class MJOforecaster:
                                   self.eof_dict,
                                   svname,U200_cesm_anom)
                 #function to run the anomaly... get_forecast_anom(yml_data,DS_CESM_for,DS_climo_forecast,MJO_for_obs)
-            except:
-                raise RuntimeError("error happened while computing filtering out the previous days.. check the filter_previous_days() function")
+            except Exception as e:
+                raise RuntimeError("error happened while projecting the EOFs.. check the project_eofs() function") from e
             print('--- done projecting the EOFS ---')
 
             self.DS_for = DS_CESM_for
