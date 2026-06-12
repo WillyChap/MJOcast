@@ -288,7 +288,16 @@ class MJOforecaster:
         # anomaly are prepended (first_date_120..first_date) so every forecast lead has a
         # full window. min_periods=120 enforces that: if the observed history is short or
         # gappy the running mean is NaN (and the affected RMM values become NaN) rather than
-        # silently using a shorter, biased window.
+        # silently using a shorter, biased window. Fail loud here if the observed anomaly
+        # record does not cover those 120 days (e.g. it ends before the forecast init date).
+        n_hist = OLR_anom.sel(time=slice(first_date_120, first_date)).sizes['time']
+        if n_hist < AvgdayN:
+            raise RuntimeError(
+                f"ERA5_Meridional_Mean_Anomaly.nc covers only {n_hist} of the {AvgdayN} days "
+                f"required before the forecast init ({str(U850_cesm_anom.time.values[0])[:10]}). "
+                f"Update the observed anomaly file to span the 120 days before each init "
+                f"(see Preprocessing_Tools/Make_Obs.ipynb).")
+
         for enen in range(nensembs):
             ### OLR anomaly filtering:
             tmpREolr=OLR_anom.sel(time=slice(first_date_120,first_date))
