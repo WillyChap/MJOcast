@@ -126,6 +126,42 @@ def test_eof1_u200_matches_obs():
     assert eof1_u200_matches_obs() == True
 
 
+def test_anomaly_era5_crosses_jan1():
+    '''anomaly_ERA5 must subtract the climatology at each forecast day-of-year, including
+    across the Dec->Jan boundary (leap-year doy 366 -> 1), with no off-by-one.'''
+    import pandas as pd
+    yaml_file_path = './tests/settings.yaml'
+    MJO_obs = ProObs.MJOobsProcessor(yaml_file_path)
+    MJO_obs.make_observed_MJO()
+    MJO_for = ProFo.MJOforecaster(yaml_file_path, MJO_obs.eof_dict, MJO_obs.MJO_fobs)
+
+    clim = xr.open_dataset('./MJOcast/Observations/ERA5_climo.nc')
+    lon = clim['lon'].values
+    times = pd.date_range('2008-12-28', periods=10, freq='D')  # crosses Jan 1 of a leap year
+    ens = np.arange(3)
+    base = np.ones((len(ens), len(times), len(lon)))
+    ds = xr.Dataset(
+        {'rlut':   (['ensemble', 'time', 'lon'], base * 1.0),
+         'ua_200': (['ensemble', 'time', 'lon'], base * 2.0),
+         'ua_850': (['ensemble', 'time', 'lon'], base * 3.0)},
+        coords={'ensemble': ens, 'time': times, 'lon': lon})
+
+    U850a, U200a, OLRa = MJO_for.anomaly_ERA5(MJO_for.yml_data, ds, None, len(times))
+
+    doy = ds['time.dayofyear'].values
+    assert list(doy) == [363, 364, 365, 366, 1, 2, 3, 4, 5, 6]  # the Dec->Jan seam, incl. leap day 366
+
+    doy_da = xr.DataArray(doy, dims='time')
+    exp_olr = clim['olr'].sel(dayofyear=doy_da).values
+    exp_u200 = clim['uwnd200'].sel(dayofyear=doy_da).values
+    exp_u850 = clim['uwnd850'].sel(dayofyear=doy_da).values
+
+    # forecast fields are constant (1/2/3), so anomaly == value - climatology_at_that_doy
+    assert np.allclose(OLRa.sel(ensemble=0).values, 1.0 - exp_olr)
+    assert np.allclose(U200a.sel(ensemble=0).values, 2.0 - exp_u200)
+    assert np.allclose(U850a.sel(ensemble=0).values, 3.0 - exp_u850)
+
+
 def test_default_creation_case1():
     '''Returns a MJO_obs instance'''
     all_pass = create_For_file_case1()
